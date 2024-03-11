@@ -1,0 +1,33 @@
+{{ extends 'global/Page.html' }}
+{{ block title }}Study Introduction (2/2){{ endblock }}
+
+{{ block content }}
+
+<style>
+    .my-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="my-box">
+After you and both of the other participants have privately reported their budget choice, we will tell you the minimum budget and the resulting payoffs.<br/><br/>
+
+You will play this game 5 times with the same two managers. At the end, we will randomly draw which of these 5 rounds will determine your payment.<br/><br/>
+
+In between the 5 rounds no further video meeting will take place.<br/><br/>
+
+Explanation Intervention:<br/><br/>
+
+You will now specify a goal for the team collaboration process you would like to achieve in the game.<br/><br/>
+ 
+For each of the statements below, multiple answers may be provided. Add each answer on a new line. <br/><br/>
+    
+{{ formfields }}
+    
+</div>
+<br/>
+{{ next_button }}
+
+{{ endblock }}

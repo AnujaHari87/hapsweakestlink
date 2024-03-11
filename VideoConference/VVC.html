@@ -1,0 +1,170 @@
+{{ extends 'global/Page.html' }}
+{{ block title }}Virtual Video Call{{ endblock }}
+
+{{ block content }}
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .row {
+            width: 1200px;
+        }
+
+        /* Create two unequal columns that floats next to each other */
+        .column {
+            float: left;
+            height: 480px;
+        }
+        .left {
+            width: 70%;
+        }
+        .right {
+            width: 30%;
+            vertical-align: middle;
+            border: 1px solid #000;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+
+
+   <div class="row">
+        <div class="column left">
+            <div id=meet></div>
+        </div>
+       <div id="radarChartContainer" style="width: 30%;" class="column right">
+
+          <canvas id="myRadarChart"></canvas>
+        </div>
+    </div>
+ <script src="https://meet.jit.si/external_api.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+
+    <script>
+        // Daten für die Teammitglieder und ihre Projektziele
+        const teamDaten = {
+            labels: ['Payoff', 'Welfare', 'Time','Team spirit', 'Team cohesion'],
+            datasets: [
+                {
+                    label: 'Member 1',
+                    data: [5, 4, 3, 2, 1],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Member 2',
+                    data: [3, 4, 5, 1,2],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2
+                },
+                {
+                    label: 'Member 3',
+                    data: [5, 5, 5, 2, 3],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2
+                }
+                
+            ]
+        };
+
+        // Radar-Chart erstellen
+        const ctx = document.getElementById('myRadarChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: teamDaten,
+            options: {
+                scale: {
+                    ticks: {
+                        beginAtZero: true,
+                        max: 8
+                    }
+                }
+            }
+        });
+    </script>
+<script>
+    const domain = "meet.jit.si"; //Here goes your domain where the meeting takes place.
+    var isStreamOn = false; //This is a variable I've defined to use later.
+    const options = {
+        roomName: "Weakest Link Game", //This is the name of the room.
+        width: 840,                //Well, you know.
+        height: 480,                //Same as above, just vertical.
+        parentNode: document.querySelector('#meet'), //Now, you declare here which element should parent your stream.
+        configOverwrite: {}, //You can turn on or off config elements with this prop.
+        interfaceConfigOverwrite: { TOOLBAR_BUTTONS: [] },  //You can turn on or off interface elements with this prop. check https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe for details
+        jwt: 'yourtokenhere' //Here, you should pass a JWT token for authorization purposes. If you're using jitsi-token-moderation or simiar, make sure the token you pass can start streams
+    }
+    const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
+    //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
+    api.addEventListener(`videoConferenceJoined`, () => {
+        const listener = ({ enabled }) => {
+            api.removeEventListener(`tileViewChanged`, listener);
+
+            if (!enabled) {
+                api.executeCommand(`toggleTileView`);
+            }
+        };
+    });
+
+   
+
+    function streamHandler() {
+        try {
+            if (!isStreamOn) {
+                document.getElementById("streamingResponseMsg").innerHTML = "Starting streaming...";
+                //The function below starts the stream or recording, according to its "mode"
+                api.executeCommand('startRecording', {
+                    mode: 'stream', //recording mode, either `file` or `stream`.
+                    rtmpStreamKey: '', //This where you *should* put your favoured rtmp stream server along with your key, like "rtmp:\/\/some.address/norecord/stream-key"
+                    youtubeStreamKey: 'rtmp:\/\/some.address/norecord/stream-key', //the youtube stream key.
+                });
+            } else {
+                document.getElementById("streamingResponseMsg").innerHTML = "Stopping streaming...";
+                //The function below stops the stream or recording, according to the string you pass. Official guide shows an object, while it should be a string
+                api.executeCommand('stopRecording', 'stream');
+            }
+
+        }
+        catch (e){
+            if (isStreamOn){
+                document.getElementById("streamingResponseMsg").innerHTML = "Error while stopping stream.";
+                console.log("Exception while stopping stream.", e);
+            }else{
+                document.getElementById("streamingResponseMsg").innerHTML = "Error while starting stream.";
+                console.log("Exception while starting stream.", e);
+
+            }    
+            this.isStreamOn = false;
+         }
+    };
+        //This part doesn't work without making some changes to the code as per this; https://github.com/team-ai-repo/jitsi-meet/pull/4/files
+    api.addEventListener("recordingStarted", () => {
+        document.getElementById("stream-btn").innerHTML="Stop Streaming";
+        document.getElementById("streamingResponseMsg").innerHTML = "Stream is on";
+        this.isStreamOn = true;
+        console.log("Example Stream On", this.isStreamOn);
+        });
+
+        api.addEventListener("recordingStopped", () => {
+        document.getElementById("stream-btn").innerHTML="Start Streaming";
+        document.getElementById("streamingResponseMsg").innerHTML = "Stream is off";
+        console.log("Example Stream Off", this.isStreamOn);
+        this.isStreamOn = false;
+    });
+
+
+</script>
+
+
+{{ endblock }}

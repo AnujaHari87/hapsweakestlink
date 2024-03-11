@@ -1,0 +1,39 @@
+{{ extends 'global/Page.html' }}
+{{ block title }}Study Introduction (1/2){{ endblock }}
+
+{{ block content }}
+
+<style>
+    .my-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="my-box">
+
+<b>Project description: </b> <br/>
+
+<br/>In this project, you have to work together remotely via a video meeting system with two other managers. All of you have to allocate budget to the project.<br/><br/>
+
+The budget contribution is a number between 1 and 7 for each of you.<br/><br/>
+
+You and both of the other managers will individually decide on a budget from 1 to 7. The decision will be made in private after the video meeting.<br/><br/>
+
+The projects success and your payoff as well as the payoff of the other two managers depends on the budgets you selected. More specifically the minimum budget that has been reported by you or one of the other two managers will determine your payoff.<br/><br/>
+
+Below you find the payoff table, showing you the payoff (in ECUs*) you will receive, depending on your choice and the minimum choice. The other two managers will receive the same payoff.<br/><br/>
+
+<img src="{% static "images/Payoff1.jpg" %}"/> 
+
+<br/><br/>
+
+
+*ECU = Experimental Currency Unit; 1ECU = 1€cent
+</div>
+<br/>
+
+{{ next_button }}
+
+{{ endblock }}
