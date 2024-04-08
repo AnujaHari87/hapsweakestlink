@@ -1,6 +1,6 @@
 from os import environ
 SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=1, participation_fee=0)
-SESSION_CONFIGS = [dict(name='weakestlinkdemo', num_demo_participants=3, app_sequence=['Intro', 'VideoConference', 'WeakestLink', 'ThankYou'])]
+SESSION_CONFIGS = [dict(name='weakestlinkdemo', num_demo_participants=3, app_sequence=['Intro', 'WeakestLink', 'Payoff', 'ThankYou'])]
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'USD'
 USE_POINTS = True

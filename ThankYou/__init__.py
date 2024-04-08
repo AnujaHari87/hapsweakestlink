@@ -13,6 +13,6 @@ class Group(BaseGroup):
     pass
 class Player(BasePlayer):
     pass
-class ThankYou(Page):
+class ThankYouExit(Page):
     form_model = 'player'
-page_sequence = [ThankYou]
+page_sequence = [ThankYouExit]

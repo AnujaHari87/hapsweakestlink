@@ -16,6 +16,17 @@ def continue_function(group: Group):
         player.payoff = 0
     
     
+def wait_for_all(group: Group):
+    pass
+def goal_wait_for_all(group: Group):
+    p1 = group.get_player_by_id(1)
+    p2 = group.get_player_by_id(2)
+    p3 = group.get_player_by_id(3)
+    
+    for player in group.get_players():
+            player.riskAversion1 = p1.riskAversion
+            player.riskAversion2 = p2.riskAversion
+            player.riskAversion3 = p3.riskAversion
 class Player(BasePlayer):
     ProlificId = models.StringField(label='Prolific ID')
     cq1mypayoff = models.IntegerField(label='My payoff (in cents):')
@@ -31,22 +42,50 @@ class Player(BasePlayer):
     cq2correct = models.BooleanField(initial=False)
     cq3correct = models.BooleanField(initial=False)
     overallScore = models.IntegerField()
-    personalGoal = models.LongStringField(label='List down a personal goal you would like to achieve in the game.')
-    outcomeTeam = models.LongStringField(label='List down at least one outcome for the team, as a result of your goal.')
-    obstacleTeam = models.LongStringField(label='List down at least one obstacle you may face in achieving this goal from any team members.')
-    planTeam = models.LongStringField(label='Plan a negotiation strategy with your team member(s) for the obstacle(s) above.')
+    riskAversion = models.IntegerField(choices=[[0, '0'], [1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [6, '6'], [7, '7'], [8, '8'], [9, '9'], [10, '10']], initial=5, label='Please use a scale from 0 to 10, where a 0 means you are “completely unwilling to take risks” and a 10 means you are “very willing to take risks”.', widget=widgets.RadioSelectHorizontal)
+    riskAversion1 = models.IntegerField(choices=[[0, '0'], [1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [6, '6'], [7, '7'], [8, '8'], [9, '9'], [10, '10']], initial=5, widget=widgets.RadioSelect)
+    riskAversion2 = models.IntegerField(choices=[[0, '0'], [1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [6, '6'], [7, '7'], [8, '8'], [9, '9'], [10, '10']], initial=0, widget=widgets.RadioSelect)
+    riskAversion3 = models.IntegerField(choices=[[0, '0'], [1, '1'], [2, '2'], [3, '3'], [4, '4'], [5, '5'], [6, '6'], [7, '7'], [8, '8'], [9, '9'], [10, '10']], initial=0, widget=widgets.RadioSelect)
+    audioCheck = models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']] , label='Audio Output', attrs={"invisible": True})
+    micCheck = models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']], label='Microphone Input', attrs={"invisible": True})
+    cameraCheck = models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']], label='Camera View', attrs={"invisible": True})
+
 class EnterProlificId(Page):
     form_model = 'player'
     form_fields = ['ProlificId']
 class AudioVideoCheck(Page):
     form_model = 'player'
-class WelcomeScreen(Page):
+    form_fields = ['cameraCheck', 'audioCheck', 'micCheck']
+    @staticmethod
+    def app_after_this_page(player: Player, upcoming_apps):
+        if player.audioCheck == 0 or player.micCheck == 0 or player.cameraCheck == 0:
+            return 'ThankYou'
+class GeneralInformation(Page):
+    form_model = 'player'
+class PartsRoundsGroups(Page):
+    form_model = 'player'
+class WaitBeforeQuestionnaire(WaitPage):
+    after_all_players_arrive = wait_for_all
+    title_text = 'Please wait till other players are ready'
+class PreCommunicationQuestionnaire(Page):
+    form_model = 'player'
+    form_fields = ['riskAversion']
+class DescriptionVideoCommunication(Page):
+    form_model = 'player'
+class WaitBeforeVideo(WaitPage):
+    after_all_players_arrive = goal_wait_for_all
+    title_text = 'Please wait till all players are ready.'
+class VVC(Page):
+    form_model = 'group'
+    timeout_seconds = 60
+class EndVVC(Page):
     form_model = 'player'
 class StudyIntroduction1(Page):
     form_model = 'player'
 class StudyIntroduction2(Page):
     form_model = 'player'
-    form_fields = ['personalGoal', 'outcomeTeam', 'obstacleTeam', 'planTeam']
+class StudyIntroduction3(Page):
+    form_model = 'player'
 class ControlQuestion1(Page):
     form_model = 'player'
     form_fields = ['cq1mypayoff', 'cq1part2payoff', 'cq1part3payoff']
@@ -77,8 +116,4 @@ class ControlQuestion3(Page):
     @staticmethod
     def app_after_this_page(player: Player, upcoming_apps):
         player.overallScore = int (player.cq1correct)+ int(player.cq2correct)+ int(player.cq3correct)
-        if (player.overallScore>= 2):
-          return upcoming_apps[0]
-        else:
-          return upcoming_apps[-1]
-page_sequence = [EnterProlificId, AudioVideoCheck, WelcomeScreen, StudyIntroduction1, StudyIntroduction2, ControlQuestion1, ControlQuestion2, ControlQuestion3]
+page_sequence = [EnterProlificId, AudioVideoCheck, GeneralInformation, PartsRoundsGroups, WaitBeforeQuestionnaire, PreCommunicationQuestionnaire, DescriptionVideoCommunication, WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1, StudyIntroduction2, StudyIntroduction3, ControlQuestion1, ControlQuestion2, ControlQuestion3]

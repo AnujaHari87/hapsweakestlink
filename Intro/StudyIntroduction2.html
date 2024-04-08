@@ -1,5 +1,5 @@
 {{ extends 'global/Page.html' }}
-{{ block title }}Study Introduction (2/2){{ endblock }}
+{{ block title }}Study Introduction (2/3){{ endblock }}
 
 {{ block content }}
 
@@ -12,22 +12,41 @@
 </style>
 
 <div class="my-box">
-After you and both of the other participants have privately reported their budget choice, we will tell you the minimum budget and the resulting payoffs.<br/><br/>
 
-You will play this game 5 times with the same two managers. At the end, we will randomly draw which of these 5 rounds will determine your payment.<br/><br/>
-
-In between the 5 rounds no further video meeting will take place.<br/><br/>
-
-Explanation Intervention:<br/><br/>
-
-You will now specify a goal for the team collaboration process you would like to achieve in the game.<br/><br/>
- 
-For each of the statements below, multiple answers may be provided. Add each answer on a new line. <br/><br/>
+<br/>
+In each round, you will receive an individual payoff which is consists of a fixed Wage, a commission, and cost which occur in case you allocate working hours to Project A.<br/><br/>
     
-{{ formfields }}
-    
+We will multiply the minimum amount of budget allocated to Project A by 6. Below we show you the formula we use to calculate your payoff. You do not need to memorize this formula – the computer program will give you payoff tables at any point where you need to make a decision. 
+
+In each round, you will receive an individual payoff which is consists of a fixed Wage, a commission, and cost which occur in case you allocate working hours to Project A, <br/><br/>
+
+<b>Fixed Wage</b> <br/><br/>
+
+The Fixed Wage is 200 ECU you receive each time you start a new round.<br/><br/>
+
+<b>Commission </b><br/><br/>
+
+The commission increases your Fixed Wage and depends on the “success” of Project A. The success is calculated by the minimum number of hours spent on Project A by any of your team members (denoted by h_min). In other words, the project's success is determined by the team member who contributes the least amount of time to the project. To calculate your commission, we will multiply the minimum number of hours allocated to Project A by 6 ECU, i.e., Commission=6 ECU *h_min  (and is the same for all team members) <br/><br/>
+
+<b>Costs for working on Project A </b><br/><br/>
+
+We will deduct 5 ECU for each hour you allocate to Project A from your payoff, i.e., Cost=5 ECU*h_A.<br/><br/>
+
+Below you find the formula we use to calculate your individual payoff consisting of the fixed wage plus the commission minus the costs from working on Project A. You do not need to memorize this formula – the computer program will give you payoff tables at any point in the rounds where you need to make a decision. <br/><br/>
+
+Payoff: 200-(5*h_A)+(6*h_min) <br/><br/>
+
+This yields the following payoff table: <br/><br/>
+
+<img src="{% static "images/PayoffTable.png" %}" width="70%" height="70%"/> 
+
+<br/><br/>
+
+
+*ECU = Experimental Currency Unit; 1ECU = 1€cent
 </div>
 <br/>
+
 {{ next_button }}
 
 {{ endblock }}
