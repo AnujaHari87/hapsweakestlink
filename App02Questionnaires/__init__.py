@@ -312,4 +312,4 @@ class ResultsWaitPage(WaitPage):
 class Results(Page):
     pass
 
-page_sequence = [Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest08, Quest09, Quest10, Quest11, QuestDemographics, QuestEnd]
+page_sequence = [Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest08, Quest09, Quest10, Quest11, QuestDemographics]

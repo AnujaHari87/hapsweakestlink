@@ -21,4 +21,4 @@ class ProlificPayoff(Page):
     form_model = 'player'
 class ThankYou(Page):
     form_model = 'player'
-page_sequence = [PayoffInformation, PostGameQuestionnaire, ProlificPayoff, ThankYou]
+page_sequence = [PayoffInformation, ProlificPayoff, ThankYou]
