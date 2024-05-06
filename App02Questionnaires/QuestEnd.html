@@ -1,0 +1,33 @@
+{% extends "global/Page.html" %}
+
+{% block title %}
+Result
+{% endblock %}
+{% block content %}
+
+<p> Your compensation from Part 1 is 200.00 ECU.</p>
+<p> Your compensation from Part 2 is xxx ECU.</p>
+<p> Your compensation from Part 3 is {{ player.payoff_quests }},00 ECU.</p>
+<p> <strong>This amounts to a total payout of {{ total_payoff }} euros.</strong></p>
+
+
+<!--
+<p>Before payout, we will verify whether the questions have been answered completely and attentively. Participants who fail to do so will not receive a payout.</p>
+-->
+
+<p>To receive the amount via bank transfer, you must provide your bank details to the KD²Lab. Personal data that you submit to the KD²Lab for the payout will not be linked to your decisions in the study. To enter your bank details, you need your payout token, which you received from the experiment management. Now, please click "Continue" to enter your bank details. Please enter your data now - later entry will not be possible.</p>
+
+<!--    {% next_button %} -->
+
+<button id="toPayout" class="otree-btn-next btn btn-primary" type="button">
+    Complete the experiment and proceed to enter bank details
+</button>
+
+<script>
+        document.getElementById("toPayout").addEventListener("click", function() {
+            // Replace the URL with the desired target URL
+            window.location.href = "https://soscisurvey.ifss.kit.edu/kd2feba/?q=00-fb01&password=kd2_study&ustudid=202402SOS&ulang=en&upartstat=participated&l=eng";
+        });
+</script>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{{ extends 'global/Page.html' }}
+{{ block title }}Control Questions 3/3{{ endblock }}
+
+{{ block content }}
+
+<style>
+    .my-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="my-box">
+Before we start the game, we want to make sure you have understood the set-up.<br/><br/>
+
+Please answer the following questions to the best of your knowledge.<br/><br/>
+
+{{ include_sibling 'PayoffTable.html'}}
+<br/><br/>
+
+<b>Imagine the following situation:</b><br/>
+
+You have reported 4, participant II has reported 4 and participant III has reported 4. <br/>
+How much payoff will you and the other participants receive?<br/><br/>
+
+{{ formfields }} <br/>
+</div>
+<br/>
+{{ next_button }}
+
+{{ endblock }}
