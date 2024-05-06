@@ -5,7 +5,7 @@ c = cu
 doc = ''
 class C(BaseConstants):
     NAME_IN_URL = 'WeakestLink'
-    PLAYERS_PER_GROUP = 3
+    PLAYERS_PER_GROUP = 4
     NUM_ROUNDS = 5
 class Subsession(BaseSubsession):
     pass
