@@ -41,6 +41,10 @@ class Player(BasePlayer):
                                    attrs={"invisible": True})
     cameraCheck = models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']], label='Camera View',
                                       attrs={"invisible": True})
+    consent =  models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']], label='Consent',
+                                     attrs={"invisible": True})
+    optInConsent =  models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']], label='Opt-In Consent',
+                                     attrs={"invisible": True})
 
 
 class EnterProlificId(Page):
@@ -50,7 +54,11 @@ class EnterProlificId(Page):
 
 class ConsentForm(Page):
     form_model = 'player'
-
+    form_fields = ['consent', 'optInConsent']
+    @staticmethod
+    def app_after_this_page(player: Player, upcoming_apps):
+        if player.consent == 0:
+            return 'App07ConsentThankYou'
 
 class AudioVideoCheck(Page):
     form_model = 'player'

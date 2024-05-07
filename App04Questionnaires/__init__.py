@@ -6,16 +6,13 @@ doc = """
 Your app description
 """
 
-
 class Constants(BaseConstants):
     name_in_url = 'App04Questionnaires'
     players_per_group = 4
     num_rounds = 1
 
-
 class Subsession(BaseSubsession):
     pass
-
 
 class Group(BaseGroup):
     pass
@@ -59,10 +56,8 @@ def make_image_data(image_names):
 
 class Player(BasePlayer):
     payoff_quests = models.IntegerField()
-
     attention_check = models.IntegerField(initial=0)
     team_cohesion = models.StringField()
-
     social_cohesion_1 = make_field('I felt accepted by my team members.')
     social_cohesion_2 = make_field('I could trust my team members.')
     social_cohesion_3 = make_field('The members of my team liked each other.')
@@ -94,10 +89,8 @@ class Player(BasePlayer):
     math = make_field2('I am good at mathematics.')
     time_2 = make_field2('I tend to procrastinate tasks, even though I know it would be better to do them right away.')
     attention3 = make_field2('Please select the option "3" to show that you are answering the questions attentively.')
-
     positive_rp_2 = make_field3("")
     altruism_2 = models.IntegerField(label="", min=0, max=1000)
-
     collective_orientation_1_p = make_field("I find working on team projects very satisfying.")
     collective_orientation_2_n = make_field("I would rather act on my own than wait for input from others.")
     collective_orientation_3_n = make_field(
@@ -123,7 +116,6 @@ class Player(BasePlayer):
         "If I am convinced of something, I stick to my opinion, no matter what other team members say.")
     attention4 = make_field(
         'Please select the option "strongly agree" to show that you are answering the questions attentively.')
-
     gaze_anxiety_1 = make_field4('Giving a speech.')
     gaze_anxiety_2 = make_field4('Talking with a group of people at a party.')
     gaze_anxiety_3 = make_field4('Taking the floor at a meeting.')
@@ -141,7 +133,6 @@ class Player(BasePlayer):
     gaze_anxiety_15 = make_field4('Talking with someone who is listening to you.')
     gaze_anxiety_16 = make_field4('Expressing a disagreement.')
     gaze_anxiety_17 = make_field4('Receiving a compliment.')
-
     psychological_safety_1 = make_field('I was not afraid to be myself during the video meeting.')
     psychological_safety_2 = make_field('I was afraid to express my opinion during the video meeting.')
     psychological_safety_3 = make_field('There was a threatening atmosphere during the video meeting.')
@@ -155,7 +146,6 @@ class Player(BasePlayer):
         'I am confident that I was able to show the right emotions during the video meeting.')
     psychological_availability_5 = make_field(
         'I am confident that I was able to cope with the physical demands during the video meeting.')
-
     engagement_1 = make_field('I was full of energy during the video meeting.')
     engagement_2 = make_field('The video meeting was useful and meaningful.')
     engagement_3 = make_field('Time flew by while I was in the video meeting.')
@@ -187,28 +177,30 @@ class Player(BasePlayer):
     engagement_28 = make_field('I spent longer in the video meeting than necessary when possible.')
     engagement_29 = make_field('I took work from the video meeting home to complete it.')
     engagement_30 = make_field('I avoided working too hard in the video meeting.')
-
-    age = models.IntegerField(label='Please enter your <strong>age</strong>.', min=18, max=100)
+    age = models.IntegerField(label='Please enter your <strong>age</strong>.', min=18, max=65)
     gender = models.IntegerField(label='<br>Please enter your <strong>gender</strong>.',
                                  choices=[[1, 'female'], [2, 'male'], [3, 'diverse']])
-    studies = models.StringField(label="<br>Please enter your <strong>current field of study</strong>.")
     ethnicity = models.IntegerField(
         label="<br>Please indicate which <strong>ethnicity</strong> you would <u>most likely</u> identify with.",
         choices=[[1, 'Asian or Pacific'], [2, 'Black or African American'], [3, 'Hispanic or Latino'],
                  [4, 'White or Caucasian']])
-    economics = models.IntegerField(
-        label="<br>Please indicate whether you have ever participated in an <strong>economic study</strong>.",
-        choices=[[1, "Yes"], [2, "No"]])
     familiarity = models.IntegerField(
         label="<br>Please indicate whether you have <strong>encountered a member of your team before participating in this study</strong>.",
         choices=[[1, 'No, never encountered before'], [2, 'Yes, encountered casually before'],
                  [3, 'Yes, we know each other']])
 
+    education = models.IntegerField(
+        label="<br>What is the highest level of education you have completed?</br>",
+        choices=[[1, 'a'], [2, 'b'], [3, 'c'],
+                 [4, 'd']])
+    prolificPrevious = models.IntegerField(
+        label="<br>How many studies have you done on Prolific in the last year?</br>",
+        choices=[[1, 'a'], [2, 'b'], [3, 'c'],
+                 [4, 'd']])
     random = models.CurrencyField()
     attractiveness_rating = models.IntegerField(label='Rate the image from -5 to 5:',
                                                 choices=[-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5],
                                                 widget=widgets.RadioSelect)
-
 
 # PAGES
 
@@ -298,7 +290,7 @@ class Quest09(Page):
 
 class QuestDemographics(Page):
     form_model = 'player'
-    form_fields = ['age', 'gender', 'studies', 'ethnicity', 'economics', 'familiarity']
+    form_fields = ['age', 'gender', 'education', 'ethnicity', 'prolificPrevious', 'familiarity']
 
 
 class QuestAR(Page):
@@ -350,10 +342,8 @@ class QuestEnd(Page):
             total_payoff=(200 + player.payoff_quests) * 0.03
         )
 
-
 class ResultsWaitPage(WaitPage):
     pass
-
 
 class Results(Page):
     pass
