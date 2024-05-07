@@ -12,7 +12,7 @@ label {
     <p>Before we start, we want to give you some information about the study and inform you about data protection.</p>
 
     <h4><b>Principal Investigators: </b></h4>
-    <p>Petra Nieken, Alexander Mädche, Tom Frank Reuscher, Michelle Hörrmann (Karlsruhe Institute of Technology)</p>
+    <p>Petra Nieken, Alexander Mädche, Christof Weinhardt (Karlsruhe Institute of Technology)</p>
 
     <h4><b>Description:</b></h4>
     <p>We study the role of communication in virtual teams. This study will take no longer than 45 minutes of your time.</p>
@@ -33,41 +33,59 @@ label {
     <p>This research has been reviewed according to the ethics procedures involving human subjects by the Karlsruhe Institute of Technology.</p>
 
     <p>If you want further information about data protection, please click
-        <a href="02Privacy.pdf" target="_blank">here</a>
+        <a href="{{ static '02Privacy.pdf'}}" target="_blank">here</a>
    <br/><br/>
-    <h4><b>[Optional Opt-In]</b></h4>
+    <h4><b>Optional Opt-In</b></h4>
 
-    <label for="opt_in_checkbox">
-    <input type="checkbox" id="opt_in_checkbox"> I agree with the usage of my video and audio in research presentations with a scientific audience. I understand that therefore my video and audio data will be kept by researchers for an unlimited period of time. I understand that this opt-in is completely voluntary and is no prerequisite for study participation.
+
+    <input type="checkbox" id="opt_in_checkbox" onchange="updateConsent(this.checked)">
+      <label for="opt_in_checkbox">  I agree with the usage of my video and audio in research presentations with a scientific audience.
+        I understand that therefore my video and audio data will be kept by researchers for an unlimited period of time.
+        I understand that this opt-in is completely voluntary and is no prerequisite for study participation.
     </label>
+     <input id="hiddenOptIn" type="hidden" name="optInConsent" value="0"/>
     <br/><br/>
-    <h4><b>[Consent]</b></h4>
+    <h4><b>Consent</b></h4>
     <p> I have understood the instructions and wish to participate in the project.
         I understand that my Prolific ID and the individual participation code will
         be used to verify my participation and send my payment on Prolific.
         After you have clicked yes, the study will start.</p>
 
-    <label>
-      <input type="radio" name="participation" value="yes" onclick="toggleNextButton()"> Yes, I want to participate.
-    </label><br>
-
-    <label>
-      <input type="radio" name="participation" value="no" onclick="toggleNextButton()"> No, I do not want to participate.
-    </label><br>
-
-
-    <script>
-        function toggleNextButton() {
-            var yesRadio = document.querySelector('input[name="participation"][value="yes"]');
-            var nextButton = document.getElementById("next_button");
-
-            if (yesRadio.checked) {
-                nextButton.disabled = false;
+        <script>
+          function updateParticipation(selectedValue) {
+            // Update the participationValue based on the selected radio button
+             var consent = document.getElementById("hiddenConsent");
+            if (selectedValue === 'yes') {
+              consent.value = 1;
             } else {
-                nextButton.disabled = true;
+              consent.value = 0;
             }
+          }
+        </script>
+
+      <form>
+        <p>Do you want to participate?</p>
+        <input type="radio" id="yes" name="participation" value="yes" onchange="updateParticipation(this.value)">
+          <input id="hiddenConsent" type="hidden" name="consent" value="0"/>
+        <label for="yes">Yes, I want to participate.</label><br>
+        <input type="radio" id="no" name="participation" value="no" onchange="updateParticipation(this.value)">
+        <label for="no">No, I do not want to participate.</label><br>
+      </form>
+
+
+      <script>
+
+      function updateConsent(isChecked) {
+         var hiddenOptIn = document.getElementById("hiddenOptIn");
+        if (isChecked) {
+          hiddenOptIn.value = 1;
+        } else {
+          hiddenOptIn.value = 0;
         }
+      }
     </script>
+
+
 
 </label>
 <br/><br/>
