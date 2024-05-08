@@ -139,7 +139,7 @@ class DescriptionVideoCommunication(Page):
 
 class WaitBeforeVideo(WaitPage):
     after_all_players_arrive = goal_wait_for_all
-    title_text = 'Please wait till all players are ready.'
+    title_text = 'Please wait till all players have entered the meeting.'
 
 
 class VVC(Page):

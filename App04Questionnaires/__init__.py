@@ -214,6 +214,9 @@ class Player(BasePlayer):
 
 # PAGES
 
+class IntroPart3(Page):
+    form_model = 'player'
+
 class Quest02(Page):
     form_model = 'player'
 
@@ -364,5 +367,5 @@ class Results(Page):
     pass
 
 
-page_sequence = [Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10, Quest11,
+page_sequence = [IntroPart3, Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10, Quest11,
                  QuestDemographics, QuestEnd]
