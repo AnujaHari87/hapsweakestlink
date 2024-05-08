@@ -158,8 +158,7 @@ class EndVVC(Page):
             'Inclusion3.jpg',
             'Inclusion4.jpg',
             'Inclusion5.jpg',
-            'Inclusion6.jpg',
-            'Inclusion7.jpg',
+            'Inclusion6.jpg'
         ]
         return dict(image_data=make_image_data(image_names))
 

@@ -23,8 +23,6 @@
 
       img {
         width: 100%;                 /* Makes images responsive to their container's size */
-        max-width: 180px;            /* Limits image width to 180px */
-        height: auto;                /* Maintains aspect ratio */
       }
 </style>
 
@@ -37,9 +35,9 @@
      <p><strong>Please select the image that best describes the relationship between you and your team.</strong></p>
     <div class="image-container">
      {{ for image in image_data }}
-        <label class="image-label">
+        <label>
             <br>
-            <img src="{{ static image.path }}" width="180px">
+            <img src="{{ static image.path }}">
             <br>
             <input type="radio" name="team_cohesion" value="{{ image.name }}" class="persist">
         </label>
