@@ -25,9 +25,7 @@
                 {{ formfield 'comprehension1' }}
                 {{ formfield 'comprehension2' }}
                 {{ formfield 'comprehension3' }}
-                {{ formfield_errors "comprehension4a" }}
-                {{ formfield_errors "comprehension4b" }}
-                {{ formfield_errors "comprehension4c" }}
+
 
                 <br>
                 <p><strong>What does your compensation depend on? Please select <u>all</u> applicable options.</strong></p>
@@ -38,6 +36,23 @@
                 <label><input type="checkbox" name="comprehension4c" class="form-check-input"/>&nbsp; &nbsp; Fewest number of hours worked by a member of your team on Project A.</label>
                 <br>
                 <br>
+
+              {{ if form.comprehension4a.errors }}
+                <div class="alert alert-danger">
+                    {{ form.comprehension4a.errors.0 }}
+                </div>
+                {{ else }}
+                {{ if form.comprehension4b.errors }}
+                <div class="alert alert-danger">
+                    {{ form.comprehension4b.errors.0 }}
+                {{ else }}
+                {{ if form.comprehension4c.errors }}
+                <div class="alert alert-danger">
+                    {{ form.comprehension4c.errors.0 }}
+                {{ endif }}
+                {{ endif }}
+                {{ endif }}
+
     </div>
 
     <br>
