@@ -52,8 +52,9 @@
     const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
     var isStreamOn = false;
      const NameParam = {{player.id_in_group}}%4;
+     const TN_name = "P" + {{player.id_in_subsession}}
      // adjust information to display
-        switch (NameParam) {
+      /*  switch (NameParam) {
           case 0:
             TN_name = "Participant 1";
             break;
@@ -68,7 +69,7 @@
             break;
           default:
             TN_name = "Participant";
-        }
+        }*/
     const options = {
         roomName: "Video Meeting", //This is the name of the room.
 

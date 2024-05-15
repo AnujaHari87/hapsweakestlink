@@ -189,7 +189,7 @@ class Player(BasePlayer):
     engagement_28 = make_field('I avoid working overtime in the meeting whenever possible.')
     engagement_29 = make_field('I take work home from the meeting to complete it.')
     engagement_30 = make_field('I avoid working too hard in the meeting.')
-    age = models.IntegerField(label='What is your <strong>age</strong> (years) ?', min=18, max=65)
+    age = models.IntegerField(label='What is your <strong>age</strong> (years) ?', min=18, max=66)
     gender = models.IntegerField(label='<br>Which <strong>gender</strong> do you identify with?',
                                  choices=[[1, 'male'], [2, 'female'], [3, 'transgender'], [4, 'non-binary'],
                                           [5, 'prefer not to say']])
@@ -207,10 +207,12 @@ class Player(BasePlayer):
         choices=[[1, 'less than High School'], [2, 'High School/GED'], [3, 'Some College'],
                  [4, '2-year College degree'], [5, '4-year College degree'],
                  [6, 'Master’s degree'],[7, 'Doctoral degree or Professional Degree (JD, MD)']])
-    prolificPrevious = models.IntegerField(
-        label="<br><b>How many studies </b> have you done on Prolific in the last year?</br>",
-        choices=[[1, 'a'], [2, 'b'], [3, 'c'],
-                 [4, 'd']])
+    prolifichours_month = models.IntegerField(
+        label="<br>How many days per month do you typically use Prolific?</br>", min=0, max=31)
+    prolifichours_day = models.IntegerField(
+        label="<br>On the days when you use Prolific, how many hours do you typically spend on it?</br>", min=1, max=24)
+    prolificprimary_income = models.IntegerField(label="Is Prolific your primary source of income?",
+                                                 choices=[[1,'Yes'], [2,'No'],[3,'Other, please specify']])
     random = models.CurrencyField()
 
 
@@ -320,7 +322,7 @@ class Quest09(Page):
 
 class QuestDemographics(Page):
     form_model = 'player'
-    form_fields = ['age', 'gender', 'education', 'ethnicity', 'prolificPrevious', 'familiarity']
+    form_fields = ['age', 'gender', 'education', 'ethnicity', 'prolifichours_month', 'prolifichours_day','prolificprimary_income','familiarity']
 
 
 class QuestAR(Page):
@@ -369,7 +371,7 @@ class QuestEnd(Page):
     def vars_for_template(player: Player):
         participant = player.participant
         return dict(
-            total_payoff=(200 + participant.payoff + player.payoff_quests) * 0.03
+            total_payoff=(200 + participant.payoff) * 0.03
         )
 
 
