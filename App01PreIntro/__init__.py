@@ -10,7 +10,6 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = 4
     NUM_ROUNDS = 1
 
-
 class Subsession(BaseSubsession):
     pass
 
@@ -19,17 +18,12 @@ class Group(BaseGroup):
     pass
 
 
-def continue_function(group: Group):
-    for player in group.get_players():
-        player.payoff = 0
 
 
 def wait_for_all(group: Group):
     pass
 
 
-def goal_wait_for_all(group: Group):
-    pass
 
 
 class Player(BasePlayer):
@@ -65,12 +59,10 @@ class ConsentForm(Page):
 class AudioVideoCheck(Page):
     form_model = 'player'
     form_fields = ['cameraCheck', 'audioCheck', 'micCheck']
-
     @staticmethod
     def app_after_this_page(player: Player, upcoming_apps):
         if player.audioCheck == 0 or player.micCheck == 0 or player.cameraCheck == 0:
             return 'App06ThankYou'
-
 
 class GeneralInformation(Page):
     form_model = 'player'
@@ -94,4 +86,4 @@ class Interventions(Page):
 
 
 page_sequence = [EnterProlificId, ConsentForm, AudioVideoCheck, GeneralInformation,
-                 PartsRoundsGroups, WaitBeforeQuestionnaire, DescriptionInterventions, Interventions]
+                 PartsRoundsGroups]

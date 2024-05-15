@@ -19,9 +19,6 @@ class Group(BaseGroup):
     pass
 
 
-def continue_function(group: Group):
-    for player in group.get_players():
-        player.payoff = 0
 
 
 def wait_for_all(group: Group):
@@ -45,15 +42,14 @@ def make_field(label):
 
 
 class Player(BasePlayer):
-    team_cohesion = models.StringField()
-    holidays_1 = make_field('Sun, Sea, and Beach holiday.')
+    holidays_1 = make_field('sun, sea, and beach holiday.')
     holidays_2 = make_field('Party holiday.')
     holidays_3 = make_field('Winter sports holiday.')
     holidays_4 = make_field('City trip.')
     holidays_5 = make_field('Backpacking holiday.')
     holidays_6 = make_field('Excursion.')
     holidays_7 = make_field('Camping holiday.')
-    holidays_8 = make_field('Cruise vacation.')
+    holidays_8 = make_field('Cruise holiday.')
     comp1_check = models.IntegerField(initial=0)
     comp2_check = models.IntegerField(initial=0)
     comp3_check = models.IntegerField(initial=0)
@@ -149,18 +145,7 @@ class VVC(Page):
 
 class EndVVC(Page):
     form_model = 'player'
-    form_fields = ['team_cohesion']
 
-    def vars_for_template(self: Player):
-        image_names = [
-            'Inclusion1.jpg',
-            'Inclusion2.jpg',
-            'Inclusion3.jpg',
-            'Inclusion4.jpg',
-            'Inclusion5.jpg',
-            'Inclusion6.jpg'
-        ]
-        return dict(image_data=make_image_data(image_names))
 
 
 class StudyIntroduction1(Page):
@@ -177,5 +162,5 @@ class StudyIntroduction3(Page):
                    'comprehension4c']
 
 
-page_sequence = [DescriptionVideoCommunication, WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1, StudyIntroduction2,
+page_sequence = [WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1, StudyIntroduction2,
                  StudyIntroduction3]

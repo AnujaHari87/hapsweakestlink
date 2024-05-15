@@ -3,12 +3,21 @@
 {{ endblock }}
 
 {{ block content }}
-
+<style>
+    .my-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+</style>
+ <div class="my-box">
 <p style="font-size: 20px;">
     In this round, the minimum number of hours worked by your team on Project A was <strong>{{ group.groupMin }} hours</strong>.
     <br><br>
-    You have decided to work <strong>{{ player.ownDecision }} hours</strong> on Project A. Therefore, your compensation for this round amounts to <strong>{{ player.payoff_hypo }} ECU</strong>.
+    You have decided to work <strong>{{ player.ownDecision }} hours</strong> on Project A. <br/><br/>Therefore, your compensation for this round amounts to <strong>{{ player.payoff_hypo }} ECU</strong>.
 </p>
 
-    {{ next_button }}
+ </div>
+<br/>
+{{ next_button }}
 {{ endblock }}

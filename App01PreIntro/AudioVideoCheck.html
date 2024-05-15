@@ -3,177 +3,494 @@
 
 {{ block content }}
 
-<style>
-    .my-box {
+ <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+      /* Applying Roboto font to all elements */
+      .my-box {
         border: 1px solid #ccc;
         padding: 10px;
         background-color: #f9f9f9;
-    }
-     #meter {
-            width: 200px;
-            height: 20px;
-            background-color: #eee;
-            position: relative;
-     }
-     #level {
-            height: 100%;
-            background-color: green;
-            transition: width 0.1s;
       }
-     label {
-            display: block;
-            margin-bottom: 10px;
-     }
-      .container {
-            align-items: left;
+      .hidden {
+        display: none;
       }
-      .dropdown {
-            margin-right: 10px;
+
+      .buttonvis {
+        padding: 10px 20px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        border: 2px solid #3498db;
+        border-radius: 5px;
+        color: black;
+        background-color: #3498db;
       }
-      .checkbox {
-            margin-left: auto;
+
+      body {
+        /* min-width: 1000px;
+
+              min-height: 800px;
+              margin-left: 0px;
+              margin-top: 0px; */
+        color: black;
       }
-</style>
+      .video-container {
+        position: relative;
+        height: 88%;
+        margin-left: 0px;
+        margin-right: 10px;
+        width: 65%;
+      }
+
+      .container-intervention {
+        position: relative;
+        height: 88%;
+        width: 35%;
+        margin-left: 10px;
+        text-align: left;
+        display: none;
+      }
+
+      #jitsi-surface {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0px;
+        max-width: 1200px;
+      }
+
+      .flex-container {
+        right: 0px;
+        display: flex;
+        flex-direction: row;
+        width: flex;
+        height: flex;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      div {
+        font-size: 16px;
+      }
+    </style>
+
 
     <div class="my-box">
-    <h5>Audio Output Check</h5>
-     <audio controls>
-        <source src="{% static 'ping.mpeg' %}" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-     <p>How many times did you hear the sound?</p>
-        <div>
 
+    <p>
+      For this study we will use the video meeting software Jitsi. <br/>It is a common
+      meeting software and works like other similar tools such as Zoom, MS
+      Teams, or others.
+      <br />
+      Before you start with the actual task we want you to test the video
+      meeting software and get familiar with the interface.
+      <br />
+      Please join the test meeting below, and check if your camera, microphone
+      and speaker are working. <br/>Please give the meeting software all permissions
+      that are asked for.
+    </p>
+        <div class="flex-container">
+      <div id="jitsi-surface" class="video-container"></div>
 
+      <div id="container-intervention2" class="container-intervention">
+        <h3>Control Form</h3>
+        <p>
+          Please select all information that applies
+          <br/>
+          to your meeting settings.
+        </p>
+          <input id="hiddenAudioCheck" type="hidden" name="audioCheck" value="0"/>
+          <input id="hiddenMicCheck" type="hidden" name="micCheck" value="0"/>
+          <input id="hiddenCameraCheck" type="hidden" name="cameraCheck" value="0"/>
+        <form id="myForm">
+          <label>
+            <input
+              type="checkbox"
+              name="audio"
+              value="My microphone worked in the test meeting"
+              onchange="doalertAudio(this)"
+            />
+            My microphone worked in the test meeting </label
+          ><br />
+          <label>
+            <input
+              type="checkbox"
+              name="video"
+              value="My video worked in the test meeting"
+              onchange="doalertVideo(this)"
+            />
+            My video worked in the test meeting </label
+          ><br />
+          <label>
+            <input
+              type="checkbox"
+              name="sound"
+              value="My speakers worked in the test meeting"
+              onchange="doalertSound(this)"
+            />
+            My speakers worked in the test meeting
+          </label>
 
-        <select class = dropdown id="myDropdown" onchange="handleDropdownChange()">
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-        </select>
-       <input type="checkbox" class="checkbox" id="audioCheckbox" disabled name="audioCheck"
-           readonly>Audio works</input>
-            <input id="hiddenAudioCheck" type="hidden" name="audioCheck" value="0"/>
+          <br />
+          <br />
+          <br />
+          <br />
+
+        </form>
+      </div>
     </div>
+    <script>
+    function doalertAudio(audio) {
+               const hiddenMicCheck = document.getElementById('hiddenMicCheck');
+                if (audio.checked) {
+                     hiddenMicCheck.value = 1;
+                 } else {
+                     hiddenMicCheck.value = 0;
+                 }
 
+        }
+
+        function doalertVideo(video) {
+               const hiddenCameraCheck = document.getElementById('hiddenCameraCheck');
+            if (video.checked) {
+                 hiddenCameraCheck.value = 1;
+             } else {
+                 hiddenCameraCheck.value = 0;
+             }
+        }
+
+        function doalertSound(sound) {
+            const hiddenAudioCheck = document.getElementById('hiddenAudioCheck');
+            if (sound.checked) {
+                 hiddenAudioCheck.value = 1;
+             } else {
+                 hiddenAudioCheck.value = 0;
+             }
+        }
+
+      </script>
+    <div id="messages"></div>
+
+    <script src="https://video-meeting-system-backend.k8s.iism.kit.edu/external_api.js"></script>
 
     <script>
-        function handleDropdownChange() {
-            const dropdown = document.getElementById("myDropdown");
-            const checkbox = document.getElementById("audioCheckbox");
-            if (dropdown.value === "3") {
-                checkbox.checked = true;
-                const hiddenAudioCheck = document.getElementById('hiddenAudioCheck');
-                hiddenAudioCheck.value = 1;
-            } else {
-                checkbox.checked = false;
-            }
-        }
-    </script>
-    <hr>
-    <h5>Microphone Decibel Level</h5>
-    <p>Click the button below and say something to check your microphone:</p>    
-    <!-- Microphone Test -->
-    <button  type="button"  onclick="checkMicrophone()">Check Microphone</button>
-    <!-- Decibel Level Meter -->
-    <div class = dropdown id="meter">
-       <div id="level"></div>
-    </div>
-     <!-- Checkbox gets automatically ticked if Mic is working -->
-    <input class="checkbox" type="checkbox" id="micCheckbox" name ="micCheck"
-           disabled readonly>Microphone works</input>
-        <input id="hiddenMicCheck" type="hidden" name="micCheck" value="0"/>
-    <hr>
-     <!-- Checkbox needs to be ticked explicitly -->
-    <h5>Camera Test</h5>
-    <button  type="button" id="startButton">Start Camera</button>
-    <input type="checkbox" id="stopCheckbox" disabled > Camera Works </input>
-    <input id="hiddenCameraCheck" type="hidden" name="cameraCheck" value="0"/>
-    <input type="checkbox" id="stopCamera"> Stop Camera </input>
-    <div id="videoContainer"></div>
-    
-    <button id="nextButton" hidden >Next</button>
+      document.addEventListener("DOMContentLoaded", function () {
+        pageTitle = document.title;
 
-    <!-- Display the warning message -->
-    <p id="warningMessage" hidden>Please leave the experiment now.</p>
+        const form = document.getElementById("myForm");
+        const errorMessages = document.getElementById("errorMessages");
 
-    <!-- Scripts for audio play -->
-     <!-- Scripts for checking microphone and display decibel meter-->
-    <script>
-        async function checkMicrophone() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            console.log('Microphone access granted:', stream);
-            startDecibelMeter(stream);
-        } catch (error) {
-            console.error('Error accessing microphone:', error);
-            alert('Microphone not detected or not working. Please try again.');
-            }
-        }
-        function startDecibelMeter(stream) {
-            const audioContext = new AudioContext();
-            const source = audioContext.createMediaStreamSource(stream);
-            const analyser = audioContext.createAnalyser();
-            source.connect(analyser);
-            analyser.fftSize = 256;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
+        form.addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+          validateForm();
 
-            function updateMeter() {
-                analyser.getByteFrequencyData(dataArray);
-                const average = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
-                const decibelLevel = Math.max(0, average - 100); // Adjust threshold as needed
-                const meterWidth = (decibelLevel / 100) * 100; // Scale to fit meter width
-                if (meterWidth > 10) {
-                    micCheckbox.checked = true;
-                    micCheckbox.disabled=true;
-                    const hiddenMicCheck = document.getElementById('hiddenMicCheck');
-                    hiddenMicCheck.value = 1;
-                  }
-                document.querySelector('#level').style.width = `${meterWidth}%`;
-                requestAnimationFrame(updateMeter);
-            }
-            updateMeter();
-        }
-    </script>
-    
-    <script>
-        const startButton = document.getElementById('startButton');
-        const stopCheckbox = document.getElementById('stopCheckbox');
-        const stopCamera = document.getElementById('stopCamera');
-        const videoContainer = document.getElementById('videoContainer');
-        let stream;
-        startButton.addEventListener('click', async () => {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                video.autoplay = true;
-                videoContainer.appendChild(video);
-                startButton.disabled = true;
-                stopCheckbox.checked = true;
-                const hiddenCameraCheck = document.getElementById('hiddenCameraCheck');
-                hiddenCameraCheck.value = 1;
-            } catch (error) {
-                console.error('Error accessing camera:', error);
-            }
+          // Perform other form submission actions here, such as AJAX request
+
+
+
+          // Optionally, redirect to another page without changing URL parameters
+          // window.location.href = 'nextpage.html';
         });
-        stopCamera.addEventListener('change', () => {
-            if (stopCamera.checked) {
-                stream.getTracks().forEach(track => track.stop());
-                videoContainer.innerHTML = '';
-                startButton.disabled = true;
+      });
 
-            } else {
-                startButton.disabled = false;
-            }
+      window.addEventListener("load", function () {
+        /*********************************
+         *                Global variables           *
+         *******************************/
+        // Read the parameter from the URL, set parameters for the testmeeting page and variables
+        // global variable defintion    /?E=y&R=hallo&G=1&T=2&M=1
+        const showElementParam = getParameterByName("treat");
+        const RoomParam = getParameterByName("room");
+        const GroupParam = getParameterByName("group");
+        const NameParam = {{player.id_in_group}}%4;
+        const ModParam = false;
+
+        const pageTitle = ""; // Get the title of the page
+
+        // adjust information to display
+        switch (NameParam) {
+          case 0:
+            TN_name = "Participant 1";
+            break;
+          case 1:
+            TN_name = "Participant 2";
+            break;
+          case 2:
+            TN_name = "Participant 3";
+            break;
+          case 3:
+            TN_name = "Participant 4";
+            break;
+          default:
+            TN_name = "Participant";
+        }
+
+        roomname1 = RoomParam;
+        modbbolean = ModParam;
+
+        const user = TN_name;
+        const treat = showElementParam;
+        const group = GroupParam;
+        const mod = modbbolean;
+        const room = roomname1;
+
+        /*********************************
+         *               meeting config            *
+         *******************************/
+
+        // calculate iframe size
+        var jitsiwidthcal = resizeIframewidthcal();
+        var jitsiheightcal = resizeIframeheightcal();
+        var jitsiwidth = resizeIframewidth();
+        var jitsiheight = resizeIframeheight();
+
+        //define iframe options
+        const domain = "haps-meeting.k8s.iism.kit.edu";
+        const options = {
+          roomName: "testmeeting",
+          lang: "en",
+          width: jitsiwidth,
+          height: jitsiheight,
+          subject: "",
+          configOverwrite: {
+            hideConferenceTimer: true,
+            disableFilmstripAutohiding: true,
+            prejoinConfig: {
+              enabled: false,
+            },
+            disableSelfView: false,
+            startWithAudioMuted: false,
+            startWithVideoMuted: false,
+            filmstrip: {
+              disableResizable: true,
+            },
+          },
+          interfaceConfigOverwrite: { TOOLBAR_BUTTONS: ["settings"] },
+           //You can turn on or off interface elements with this prop. check https://jitsi.github.io/handbook/docs/dev-guide/dev-guide-iframe for details
+          parentNode: document.getElementById("jitsi-surface"),
+          userInfo: {
+            displayName: user,
+          },
+        };
+
+        // initialze meeting
+        const api = new JitsiMeetExternalAPI(domain, options);
+        // change filmstrip size
+        //  console.log("start");
+
+        var jitsifilmwidth = 0;
+        // console.log(jitsiwidthcal);
+        jitsifilmwidth = 0.2 * jitsiwidthcal;
+        api.executeCommand('toggleVirtualBackgroundDialog');
+
+
+        //  console.log(jitsifilmwidth );
+        var myDiv = document.getElementById("container-intervention2");
+        //api.executeCommand('toggleFilmStrip');
+        setTimeout(function () {
+          api.executeCommand("resizeFilmStrip", {
+            width: 350,
+          });
+        }, 3000);
+
+        // showw information of control survey
+        setTimeout(function () {
+          // Show the text by changing its display property
+          myDiv.style.display = "block";
+        }, 5000); // 30 seconds
+      });
+
+
+
+      /*********************************
+       *   websocket    *
+       *******************************/
+
+      const TreatParam = getParameterByName("treat");
+      const RoomParam = getParameterByName("room");
+      const GroupParam = getParameterByName("group");
+      const NameParam = {{player.id_in_group}}%4;
+      const ModParam = false;
+
+      let wsUrl =
+        "ws://localhost:8080/ws?id=" +
+        {{player.id_in_group}} +
+        "&treatment=" +
+        TreatParam +
+        "&moderator=" +
+        ModParam +
+        "&room=" +
+        RoomParam +
+        "&group=" +
+        GroupParam;
+      const socket = new WebSocket(wsUrl);
+
+      socket.onopen = function (event) {
+        //console.log("Connected to WebSocket server");
+        socket.send(JSON.stringify({ type: "COMMAND", content: "HELLO" }));
+        sendLogMessage("arrive_test");
+      };
+
+      socket.onmessage = function (event) {
+        //console.log("Received message:", event.data);
+
+        if (event.data == "redirect") {
+          sendLogMessage("leave_test");
+          startCountdown();
+        }
+      };
+
+
+
+    socket.onclose = function(event) {
+        socket = null
+        setTimeout(startWebsocket, 5000)
+
+      };
+
+      const ping_interval = 4500; // it's in milliseconds, which equals to 120 seconds
+        let interval;
+        socket.addEventListener('open', (event) => {
+          console.log('websocket connection established: ', event);
+          socket.send(JSON.stringify({"type":"LOG","content":"stillhere"}));
+
+          // to Keep the connection alive
+          interval = setInterval(() => {
+            const sendMessage = JSON.stringify({ ping: 1 });
+            socket.send(JSON.stringify({"type":"LOG","content":"stillhere"}));
+          }, ping_interval);
         });
+
+
+
+      function startWebsocket() {
+        socket = new WebSocket(wsUrl)
+        console.log('reConnected to WebSocket server');
+      //  socket.send(JSON.stringify({ type: "COMMAND", content: "HELLO" }));
+      //  sendLogMessage("arrive_test");
+}
+
+      function sendLogMessage(message) {
+        socket.send(JSON.stringify({ type: "LOG", content: message }));
+      }
+
+      /*********************************
+       *               helper functions             *
+       *******************************/
+
+      // helper function iframe size calucation
+      function resizeIframewidth() {
+        var box = document.getElementById("jitsi-surface");
+        //console.log(box);
+        jitsiwidthcal = box.offsetWidth;
+        jitsiheightcal = box.offsetHeight;
+
+        //console.log(jitsiwidthcal);
+        //console.log(jitsiheightcal);
+
+        jitsiwidth = "" + jitsiwidthcal + "px";
+        jitsiheightcal = jitsiwidthcal / 3;
+
+        //console.log(jitsiheightcal);
+        jitsiheight = "" + jitsiheightcal + "px";
+
+        //console.log(jitsiwidth);
+        //console.log(jitsiheight);
+
+        return jitsiwidth;
+      }
+
+      // helper function iframe size calucation
+      function resizeIframewidthcal() {
+        var box = document.getElementById("jitsi-surface");
+        //console.log(box);
+        jitsiwidthcal = box.offsetWidth;
+
+        return jitsiwidthcal;
+      }
+
+      // helper function iframe size calucation
+      function resizeIframeheight() {
+        var box = document.getElementById("jitsi-surface");
+        //console.log(box);
+        jitsiwidthcal = box.offsetWidth;
+        jitsiheightcal = box.offsetHeight;
+
+        //console.log(jitsiwidthcal);
+        //console.log(jitsiheightcal);
+
+        jitsiwidth = "" + jitsiwidthcal + "px";
+        jitsiheightcal = jitsiwidthcal * (2 / 3);
+
+        //console.log(jitsiheightcal);
+        jitsiheight = "" + jitsiheightcal + "px";
+
+        //console.log(jitsiwidth);
+        //console.log(jitsiheight);
+
+        return jitsiheight;
+      }
+
+      // helper function iframe size calucation
+      function resizeIframeheightcal() {
+        var box = document.getElementById("jitsi-surface");
+        jitsiwidthcal = box.offsetWidth;
+        jitsiheightcal = box.offsetHeight;
+
+        //console.log(jitsiwidthcal);
+        //console.log(jitsiheightcal);
+        jitsiheightcal = jitsiwidthcal * (2 / 3);
+
+        return jitsiheightcal;
+      }
+
+      function redirectToRedirectedPage() {
+        window.location.href = "/meetpage";
+      }
+
+      // helper function to validate if control form is filled out correctly
+      function validateForm() {
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        var isChecked = true;
+
+        for (var i = 0; i < checkboxes.length; i++) {
+          //console.log("lengh" + checkboxes.length);
+          if (!checkboxes[i].checked) {
+            isChecked = false;
+            break;
+          }
+        }
+
+        if (!isChecked) {
+          alert("Please check at least one checkbox before submitting.");
+          return false; // Prevent form submission
+        } else {
+          const showElementParam = getParameterByName("treat");
+          const RoomParam = getParameterByName("room");
+          const GroupParam = getParameterByName("group");
+          const NameParam = getParameterByName("user");
+          const ModParam = false;
+
+
+        }
+      }
+
+      function getParameterByName(name) {
+        url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+        const results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return "";
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
     </script>
-
     </div>
-    <br/><br/>
 
+<br/>
 {{next_button}}
 {{ endblock }}

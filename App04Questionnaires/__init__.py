@@ -39,7 +39,7 @@ def make_field2(label):
 
 def make_field3(label):
     return models.IntegerField(
-        choices=[5, 10, 15, 20, 25, 30],
+        choices=[0, 5, 10, 15, 20, 25, 30],
         label=label,
         widget=widgets.RadioSelect,
     )
@@ -58,39 +58,40 @@ def make_image_data(image_names):
 
 
 class Player(BasePlayer):
+    team_cohesion = models.StringField()
     payoff_quests = models.IntegerField()
     attention_check = models.IntegerField(initial=0)
-    team_cohesion = models.StringField()
-    social_cohesion_1 = make_field('I felt accepted by my team members.')
-    social_cohesion_2 = make_field('I could trust my team members.')
-    social_cohesion_3 = make_field('The members of my team liked each other.')
-    social_cohesion_4 = make_field('The members of my team made an effort to understand the opinions of others.')
+    social_cohesion_1 = make_field('I felt accepted by the team.')
+    social_cohesion_2 = make_field('In my team we trust each other.')
+    social_cohesion_3 = make_field('The members like and care about each other.')
+    social_cohesion_4 = make_field('The members try to understand why they do things they do; try to reason it out.')
     social_cohesion_5 = make_field(
-        'The members of my team seemed to make an effort to behave in a way that is acceptable to others.')
-    social_cohesion_6 = make_field('The members of my team disclosed personal information or feelings.')
-    attention1 = make_field(
-        'Please select the option "strongly disagree" to show that you are answering the questions attentively.')
+        'The members feel a sense of participation.')
+    social_cohesion_6 = make_field('The members appear to do things the way they think will be acceptable to the team.')
+    social_cohesion_7 = make_field('The members reveal sensitive personal information or feelings.')
+    attention1 = make_field('Please select the option "strongly disagree" to show that you are answering the questions attentively.')
 
-    risk = make_field2('Are you generally a risk-taking person or do you try to avoid risks?')
 
-    time_1 = make_field2(
-        'How much would you be willing to give up on something that benefits you today in order to benefit more in the future?')
+    risk = make_field2('')
+
+    time_1 = make_field2('How willing are you to give up something that is beneficial for you today in order to benefit more from that in the future?')
+
     negative_rp_1 = make_field2(
-        'How much would you be willing to punish someone who treated YOU unfairly, even if this would have negative consequences for you?')
+        'How willing are you to punish someone who treats you unfairly, even if there may be costs for you?')
     negative_rp_2 = make_field2(
-        'How much would you be willing to punish someone who treated OTHERS unfairly, even if this would incur costs for you?')
+        'How willing are you to punish someone who treats others unfairly,even if there may be costs for you?')
     altruism_1 = make_field2(
-        'How much would you be willing to give for a good cause, without expecting anything in return?')
+        'How willing are you to give to good causes without expecting anything in return?')
     attention2 = make_field2('Please select the option "7" to show that you are answering the questions attentively.')
 
-    positive_rp_1 = make_field2('If someone does me a favor, I am willing to reciprocate.')
+    positive_rp_1 = make_field2('When someone does me a favor, I am willing to return it.')
     negative_rp_3 = make_field2(
-        'If I am treated very unfairly, I will seek revenge at the first opportunity, even if it costs me to do so.')
-    trust_1_positive = make_field2('I am convinced that most people have good intentions.')
+        'If I am treated very unjustly, I will take revenge at the first occasion, even if there is a cost to do so.')
+    trust_1_positive = make_field2('I assume that people have only the best intentions.')
     trust_2_negative = make_field2("You can't rely on anyone nowadays.")
     trust_3_positive = make_field2('In general, people can be trusted.')
-    math = make_field2('I am good at mathematics.')
-    time_2 = make_field2('I tend to procrastinate tasks, even though I know it would be better to do them right away.')
+    math = make_field2('I am good at math.')
+    time_2 = make_field2('I tend to postpone tasks even if I know it would be better to do them right away.')
     attention3 = make_field2('Please select the option "3" to show that you are answering the questions attentively.')
     positive_rp_2 = make_field3("")
     altruism_2 = models.IntegerField(label="", min=0, max=1000)
@@ -188,25 +189,26 @@ class Player(BasePlayer):
     engagement_28 = make_field('I avoid working overtime in the meeting whenever possible.')
     engagement_29 = make_field('I take work home from the meeting to complete it.')
     engagement_30 = make_field('I avoid working too hard in the meeting.')
-    age = models.IntegerField(label='Please enter your <strong>age</strong>.', min=18, max=65)
-    gender = models.IntegerField(label='<br>Please enter your <strong>gender</strong>.',
+    age = models.IntegerField(label='What is your <strong>age</strong> (years) ?', min=18, max=65)
+    gender = models.IntegerField(label='<br>Which <strong>gender</strong> do you identify with?',
                                  choices=[[1, 'male'], [2, 'female'], [3, 'transgender'], [4, 'non-binary'],
                                           [5, 'prefer not to say']])
     ethnicity = models.IntegerField(
-        label="<br>Please indicate which <strong>ethnicity</strong> you would <u>most likely</u> identify with.",
+        label="<br>Which of the following <b>ethnicities</b> best describes you?<br/>",
         choices=[[1, 'Asian or Pacific Islander'], [2, 'Black or African American'], [3, 'Hispanic or Latino'],
-                 [4, 'White or Caucasian'], [5, 'Multiracial or Biracial'], [6, 'A race/ethnicity not listed here']])
+                 [4, 'Native American or Alaskan Native'], [5, 'White or Caucasian'], [6, 'Multiracial or Biracial'], [7, 'A race/ethnicity not listed here']])
     familiarity = models.IntegerField(
-        label="<br>Please indicate whether you have <strong>encountered a member of your team before participating in this study</strong>.",
+        label="<br>Please indicate whether you have ever <b>met a member of your team before </b> participating in this study</strong>.",
         choices=[[1, 'No, never met before'], [2, 'Yes, met in passing'],
                  [3, 'Yes, we are acquaintances']])
 
     education = models.IntegerField(
-        label="<br>What is the highest level of education you have completed?</br>",
-        choices=[[1, 'a'], [2, 'b'], [3, 'c'],
-                 [4, 'd']])
+        label="<br>What is the highest level of <b>education</b> you have completed?</br>",
+        choices=[[1, 'less than High School'], [2, 'High School/GED'], [3, 'Some College'],
+                 [4, '2-year College degree'], [5, '4-year College degree'],
+                 [6, 'Master’s degree'],[7, 'Doctoral degree or Professional Degree (JD, MD)']])
     prolificPrevious = models.IntegerField(
-        label="<br>How many studies have you done on Prolific in the last year?</br>",
+        label="<br><b>How many studies </b> have you done on Prolific in the last year?</br>",
         choices=[[1, 'a'], [2, 'b'], [3, 'c'],
                  [4, 'd']])
     random = models.CurrencyField()
@@ -216,6 +218,19 @@ class Player(BasePlayer):
 
 class IntroPart3(Page):
     form_model = 'player'
+    form_fields = ['team_cohesion']
+
+
+    def vars_for_template(self: Player):
+        image_names = [
+            'Inclusion1.jpg',
+            'Inclusion2.jpg',
+            'Inclusion3.jpg',
+            'Inclusion4.jpg',
+            'Inclusion5.jpg',
+            'Inclusion6.jpg'
+        ]
+        return dict(image_data=make_image_data(image_names))
 
 class Quest02(Page):
     form_model = 'player'
@@ -225,7 +240,7 @@ class Quest02(Page):
     def get_form_fields(player):
         import random
         soco = ['social_cohesion_1', 'social_cohesion_2', 'social_cohesion_3', 'social_cohesion_4', 'social_cohesion_5',
-                'social_cohesion_6', 'attention1']
+                'social_cohesion_6', 'social_cohesion_7','attention1']
         random.shuffle(soco)
         return soco
 
@@ -252,8 +267,7 @@ class Quest04(Page):
 
 class Quest05(Page):
     form_model = 'player'
-    form_fields = ['positive_rp_1', 'negative_rp_3', 'trust_1_positive', 'trust_2_negative', 'trust_3_positive',
-                   'attention3', 'math', 'time_2']
+    form_fields = ['positive_rp_1', 'negative_rp_3', 'trust_1_positive', 'attention3', 'math', 'time_2']
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
@@ -311,7 +325,7 @@ class QuestDemographics(Page):
 
 class QuestAR(Page):
     form_model = 'player'
-    form_fields = ['attricativenessrating']
+    form_fields = ['attractivenessrating']
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -355,7 +369,7 @@ class QuestEnd(Page):
     def vars_for_template(player: Player):
         participant = player.participant
         return dict(
-            total_payoff=(200 + player.payoff_quests) * 0.03
+            total_payoff=(200 + participant.payoff + player.payoff_quests) * 0.03
         )
 
 

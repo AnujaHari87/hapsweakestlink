@@ -25,12 +25,6 @@ class Group(BaseGroup):
 
 
 
-
-def wait_for_all(group: Group):
-    pass
-
-
-
 class Player(BasePlayer):
     ownDecision = models.IntegerField(
         blank=False, min=0, max=40
@@ -85,7 +79,7 @@ class CalculatePayoff(WaitPage):
                 g_past = group.in_round(group.randomNumber)
                 p.payoff = C.ENDOWMENT + (6 * g_past.groupMin) - (5 * p_past.ownDecision)
                 part = p.participant
-
+                print(p.payoff)
 
 class Results(Page):
     @staticmethod

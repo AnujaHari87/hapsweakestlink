@@ -58,15 +58,16 @@
         font-weight: bolder;
         color: white !important;
     }
+     .my-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
 </style>
 {{ endblock }}
 
 {{ block content }}
-    <!-- TODO
-        Decision screen
-        Show payoff table as hint -- template
-        Dynamically calculate and show payoff
-    -->
+    <div class="my-box">
     <br>
     <label for="ownDecision">
         <p style="font-size: 20px;"><strong>Please now decide how many hours you would like to work on Project A. The remaining hours will be allocated to your individual Project B.</strong></p>
@@ -82,7 +83,9 @@
         <option value="30">30</option>
         <option value="40">40</option>
     </select>
+
     <br>
+    </div>
     <br>
     <br>
 

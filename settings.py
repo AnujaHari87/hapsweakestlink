@@ -1,13 +1,17 @@
 from os import environ
 SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=1, participation_fee=0)
-SESSION_CONFIGS = [dict(name='weakestlinkdemo', num_demo_participants=4, app_sequence=['App01PreIntro', 'App02PostIntro', 'App03WeakestLink', 'App04Questionnaires', 'App05Payoff', 'App06ThankYou', 'App07ConsentThankYou'])]
+SESSION_CONFIGS = [dict(name='weakestlinkdemo', num_demo_participants=4, app_sequence=['App01PreIntro','App02PostIntro', 'App03WeakestLink', 'App04Questionnaires', 'App05Payoff', 'App06ThankYou', 'App07ConsentThankYou'])]
 LANGUAGE_CODE = 'en'
-REAL_WORLD_CURRENCY_CODE = 'USD'
-USE_POINTS = True
+REAL_WORLD_CURRENCY_CODE = ''
+USE_POINTS = False
 DEMO_PAGE_INTRO_HTML = ''
 PARTICIPANT_FIELDS = []
 SESSION_FIELDS = []
-ROOMS = []
+ROOMS = [
+    dict(
+        name='HapsPilot',
+        display_name='HAPS Pilot'
+    )]
 
 ADMIN_USERNAME = 'admin'
 # for security, best to set admin password in an environment variable
