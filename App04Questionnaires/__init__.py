@@ -123,19 +123,19 @@ class Player(BasePlayer):
         "When others disagree, it is important to hold one's own ground and not give in.")
     attention4 = make_field(
         'Please select the option "strongly agree" to show that you are answering the questions attentively.')
-    psychological_safety_1 = make_field('I am not afraid to be myself during the video meeting.')
-    psychological_safety_2 = make_field('I am afraid to express my opinion in the meeting.')
-    psychological_safety_3 = make_field('There is a threatening atmosphere in the meeting.')
+    psychological_safety_1 = make_field('I was not afraid to be myself during the video meeting.')
+    psychological_safety_2 = make_field('I was afraid to express my opinion in the meeting.')
+    psychological_safety_3 = make_field('There was a threatening atmosphere in the meeting.')
     psychological_availability_1 = make_field(
-        'I am confident that I am able to manage competing demands in a meeting.')
+        'I am confident that I was able to manage competing demands in a meeting.')
     psychological_availability_2 = make_field(
-        'I am confident that I am able to deal with problems that arise in the meeting.')
+        'I am confident that I was able to deal with problems that arise in the meeting.')
     psychological_availability_3 = make_field(
-        'I am confident that I am can think clearly in the meeting.')
+        'I am confident that I was able to think clearly in the meeting.')
     psychological_availability_4 = make_field(
-        'I am confident that I am able to show the right emotions in the meeting.')
+        'I am confident that I was able to show the right emotions in the meeting.')
     psychological_availability_5 = make_field(
-        'I am confident that I can cope with the physical demands of the meeting.')
+        'I am confident that I was able to cope with the physical demands of the meeting.')
 
     big5_1 = make_field(
         'I see myself as someone who is reserved.')
@@ -158,37 +158,18 @@ class Player(BasePlayer):
     big5_10 = make_field(
         'I see myself as someone who has an active imagination.')
 
-    engagement_1 = make_field('In the meeting I am full of exuberant energy.')
-    engagement_2 = make_field('The meeting is useful and meaningful.')
-    engagement_3 = make_field('While I am in the meeting, time flies by.')
-    engagement_4 = make_field('I feel fit and energetic during the meeting.')
-    engagement_5 = make_field('I am enthusiastic about my meeting.')
-    engagement_6 = make_field('While I am in the meeting, I forget everything around me.')
-    engagement_7 = make_field('The meeting inspires me.')
-    engagement_8 = make_field('When I get up in the morning, I look forward to my meetings.')
-    engagement_9 = make_field('I feel happy when I work intensively during the meeting.')
-    engagement_10 = make_field('I am proud of my work in the meeting.')
-    engagement_11 = make_field('I am completely absorbed in my work in the meeting.')
-    engagement_12 = make_field('When I am in the meeting, I can stay in it for a very long tine.')
-    engagement_13 = make_field('The meeting is a challenge for me.')
-    engagement_14 = make_field('The meeting carries me away.')
-    engagement_15 = make_field('I am mentally very resilient in the meeting.')
-    engagement_16 = make_field('I find it difficult to detach myself from the me.')
-    engagement_17 = make_field('I always persevere in the meeting, even when things are not going so well.')
-    engagement_18 = make_field(
-        'Completing my task in the meeting is so engrossing that I forget everything else.')
-    engagement_19 = make_field('I often think about other things when I am in the meeting.')
-    engagement_20 = make_field('I am rarely distracted when I am in the meeting.')
-    engagement_21 = make_field('Time passes quickly when I am in the meeting.')
-    engagement_22 = make_field('I put a lot of effort into the meeting.')
-    engagement_23 = make_field('I am excited when I do well in my meeting.')
-    engagement_24 = make_field('I often feel emotionally detached from the meeting.')
-    engagement_25 = make_field('My own feelings depend on how well I do in the meeting.')
-    engagement_26 = make_field('I expend a lot of energy to get through the meeting.')
-    engagement_27 = make_field('I stay until the work in the meeting is done.')
-    engagement_28 = make_field('I avoid working overtime in the meeting whenever possible.')
-    engagement_29 = make_field('I take work home from the meeting to complete it.')
-    engagement_30 = make_field('I avoid working too hard in the meeting.')
+    engagement_1 = make_field(
+        'The video meeting was so absorbing that I forget about everything else.')
+    engagement_2 = make_field('I often thought about other things during the video meeting. ')
+    engagement_3 = make_field('I was rarely distracted in the video meeting.')
+    engagement_4 = make_field('Time passed quickly in the video meeting.')
+    engagement_5 = make_field('I really put my heart into the video meeting.')
+    engagement_6 = make_field('I got excited when actively contributing in the video meeting.')
+    engagement_7 = make_field('I often felt emotionally detached from the video meeting.')
+    engagement_8 = make_field('My own feelings were affected by how much I contributed in the video meeting.')
+    engagement_9 = make_field('I exerted a lot of energy in the video meeting.')
+    engagement_10 = make_field('I avoided actively contributing in the video meeting.')
+
     age = models.IntegerField(label='What is your <strong>age</strong> (years) ?', min=18, max=66)
     gender = models.IntegerField(label='<br>Which <strong>gender</strong> do you identify with?',
                                  choices=[[1, 'male'], [2, 'female'], [3, 'transgender'], [4, 'non-binary'],
@@ -353,10 +334,7 @@ class Quest10(Page):
 class Quest11(Page):
     form_model = 'player'
     form_fields = ['engagement_1', 'engagement_2', 'engagement_3', 'engagement_4', 'engagement_5', 'engagement_6',
-                   'engagement_7', 'engagement_8', 'engagement_9', 'engagement_10', 'engagement_11', 'engagement_12',
-                   'engagement_13', 'engagement_14', 'engagement_15', 'engagement_16', 'engagement_17', 'engagement_18',
-                   'engagement_19', 'engagement_20', 'engagement_21', 'engagement_22', 'engagement_23', 'engagement_24',
-                   'engagement_25', 'engagement_26', 'engagement_27', 'engagement_28', 'engagement_29', 'engagement_30']
+                   'engagement_7', 'engagement_8', 'engagement_9', 'engagement_10']
 
     @staticmethod
     def before_next_page(player: Player, timeout_happened):

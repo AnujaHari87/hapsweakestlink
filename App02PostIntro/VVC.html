@@ -14,7 +14,7 @@
         /* Create two unequal columns that floats next to each other */
         .column {
             float: left;
-            height: 480px;
+            height: 700px;
         }
         .left {
             width: 70%;
@@ -35,6 +35,8 @@
 
    <div class="row">
         <div class="column left">
+            <p><b>Please now select your video background.</b> You can just <b>choose any of the provided options as they are all the same image.</b>
+                Once all group members have selected an image, the video meeting will start. </p>
             <div id=meet></div>
         </div>
         <div id="container" class="column right">
@@ -46,7 +48,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/highcharts-more.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
 
 <script>
     const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
@@ -71,9 +73,9 @@
             TN_name = "Participant";
         }*/
     const options = {
-        roomName: "Video Meeting", //This is the name of the room.
+        roomName: "Video Meeting" + {{player.group_id}}, //This is the name of the room.
 
-        height: 480,                //Same as above, just vertical.
+        height: 700,                //Same as above, just vertical.
         parentNode: document.querySelector('#meet'), //Now, you declare here which element should parent your stream.
         configOverwrite: {
           //  fileRecordingsEnabled =true,
@@ -87,10 +89,42 @@
             startWithVideoMuted: false,
             filmstrip: {
                  disableResizable: true,
-             }
+             },
+             recordings: {
+                 recordAudioAndVideo: true,
+                 suggestRecording: false,
+                 showPrejoinWarning: false
+             },
+             screenshotCapture: {
+                   enabled: true,
+                    mode: 'always'
+            },
+            participantsPane: {
+             hideModeratorSettingsTab: false,
+             hideMoreActionsButton: false,
+             hideMuteAllButton: false
+            },
+
+            transcription: {
+                enabled: true,
+                translationLanguages: ['en-US', 'es'],
+                useAppLanguage: false,
+                preferredLanguage: 'en-US',
+                autoTranscribeOnRecord: true
+            },
+            fileRecordingsEnabled: true,
+            localRecording: {
+                 disable: false,
+                 notifyAllParticipants: false
+            }
+
 
         }, //You can turn on or off config elements with this prop.
-        interfaceConfigOverwrite: { TOOLBAR_BUTTONS: ["settings"]},
+        interfaceConfigOverwrite: {
+               TOOLBAR_BUTTONS:[],
+               SHOW_JITSI_WATERMARK: false,
+               SHOW_MEETING_NAME: false,
+                SHOW_MEETING_TIMER: false},
         userInfo: {
             displayName: TN_name,
           }
@@ -98,15 +132,53 @@
         const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
         //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
         api.addEventListener(`videoConferenceJoined`, () => {
-        const listener = ({ enabled }) => {
-            api.removeEventListener(`tileViewChanged`, listener);
-            if (!enabled) {
-                api.executeCommand(`toggleTileView`);
-            }
-        };
+                setTimeout(() => {
+                        api.executeCommand('toggleVirtualBackgroundDialog');
+                    }, 2000);
+
+                setTimeout(() => {
+                    html2canvas(document.querySelector('#meet')).then(canvas => {
+                        // You can now display or save the canvas as an image
+                        document.body.appendChild(canvas);
+
+                        // To save as an image
+                        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                        var link = document.createElement('a');
+
+                        // Set the download attribute with a default file name
+                         link.download = {{player.group_id}}+"_"+
+                                + {{player.id_in_subsession}} + '.png';
+
+                         // Set the href attribute to the image data URL
+                         link.href = image;
+
+                        // Programmatically click the link to trigger the download
+                        link.click();
+                    });
+                }, 15000); // Adjust time as necessary for the video streams to appear
+
+                const listener = ({ enabled }) => {
+                    api.removeEventListener(`tileViewChanged`, listener);
+                    if (!enabled) {
+                        api.executeCommand(`toggleTileView`);
+                    }
+                };
     });
 
-  api.executeCommand('toggleVirtualBackgroundDialog');
+        const fs = require('fs');
+        const path = require('path');
+
+        function createDirIfNotExists(dirPath) {
+            if (!fs.existsSync(dirPath)) {
+                fs.mkdirSync(dirPath, { recursive: true });
+                console.log(`Directory created: ${dirPath}`);
+            } else {
+                console.log(`Directory already exists: ${dirPath}`);
+            }
+        }
+
+
+
     function streamHandler() {
         try {
             if (!isStreamOn) {
@@ -132,7 +204,7 @@
                 document.getElementById("streamingResponseMsg").innerHTML = "Error while starting stream.";
                 console.log("Exception while starting stream.", e);
 
-            }    
+            }
             this.isStreamOn = false;
          }
     };
