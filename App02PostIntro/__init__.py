@@ -140,7 +140,7 @@ class WaitBeforeVideo(WaitPage):
 
 class VVC(Page):
     form_model = 'group'
-    timeout_seconds = 60
+    timeout_seconds = 240
 
 
 class EndVVC(Page):
