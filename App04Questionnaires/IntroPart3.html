@@ -14,6 +14,7 @@
         justify-content: center;     /* Centers items horizontally */
         align-items: center;         /* Centers items vertically */
         width: 100%;                 /* Sets the container's width to full screen */
+
       }
 
       .image-label {
@@ -25,36 +26,21 @@
       img {
         width: 100%;                 /* Makes images responsive to their container's size */
       }
+      .centered-radio-container {
+
+    }
+
+
+
+    .radio-buttons input[type="radio"] {
+        margin: 10px; /* Adjust margin as needed */
+    }
+
 </style>
 
 <div class="my-box">
 In this part, you will now answer a series of questionnaires. <br/>
 
-
-    <p><strong>Please select the image that best describes the relationship between you and your team.</strong></p>
-    <div class="image-container">
-     {{ for image in image_data }}
-        <label>
-            <br>
-            <img src="{{ static image.path }}">
-            <br>
-            <input type="radio" name="team_cohesion" value="{{ image.name }}" class="persist">
-        </label>
-    {{ endfor }}
-    </div>
-    {{ formfield_errors 'team_cohesion' }}
-
-    <script>
-        const errorDiv = document.querySelector('.form-control-errors');
-
-        if (errorDiv) {
-            errorDiv.textContent = 'Please select an image to proceed.'
-        }
-    </script>
-</div>
-<br/> <br/>
-    <br/>
-    <br/>
 
 </div>
 

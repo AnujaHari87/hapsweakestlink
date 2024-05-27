@@ -4,11 +4,20 @@
 Result
 {% endblock %}
 {% block content %}
+<style>
+    .my-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
 
+<div class="my-box">
 <p> Your compensation from Part 1 is 200.00 ECU.</p>
 <p> Your compensation from Part 2 is {{participant.payoff}} ECU.</p>
 <p> <strong>This amounts to a total payout of £{{ total_payoff }}.</strong></p>
+</div>
 
-
+{{next_button}}
 
 {% endblock %}

@@ -201,17 +201,22 @@ class Player(BasePlayer):
 
 class IntroPart3(Page):
     form_model = 'player'
+
+
+class Quest01(Page):
+    form_model = 'player'
     form_fields = ['team_cohesion']
 
 
     def vars_for_template(self: Player):
         image_names = [
-            'Inclusion1.jpg',
-            'Inclusion2.jpg',
-            'Inclusion3.jpg',
-            'Inclusion4.jpg',
-            'Inclusion5.jpg',
-            'Inclusion6.jpg'
+            'Picture1.png',
+            'Picture2.png',
+            'Picture3.png',
+            'Picture4.png',
+            'Picture5.png',
+            'Picture6.png',
+            'Picture7.png'
         ]
         return dict(image_data=make_image_data(image_names))
 
@@ -231,6 +236,7 @@ class Quest02(Page):
     def before_next_page(player: Player, timeout_happened):
         if player.attention1 != 1:
             player.attention_check += 1
+
 
 
 class Quest03(Page):
@@ -361,5 +367,5 @@ class Results(Page):
     pass
 
 
-page_sequence = [IntroPart3, Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10, Quest11,
+page_sequence = [IntroPart3, Quest01, Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10, Quest11,
                  QuestDemographics, QuestEnd]

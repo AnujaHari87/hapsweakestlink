@@ -4,8 +4,27 @@
 {{ block content }}
 
  <style>
-      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
-
+        #video {
+            width: 100%;
+            height: auto;
+            max-height: 60vh; /* Adjusts height based on viewport */
+            border: 1px solid #ccc;
+        }
+        #startBtn, #stopBtn {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #startBtn {
+            background-color: blue;
+            color: white;
+        }
+        #stopBtn {
+            background-color: blue;
+            color: white;
+            display: none;
+        }
       /* Applying Roboto font to all elements */
       .my-box {
         border: 1px solid #ccc;
@@ -16,26 +35,6 @@
         display: none;
       }
 
-      .buttonvis {
-        padding: 10px 20px;
-        font-size: 16px;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        border: 2px solid #3498db;
-        border-radius: 5px;
-        color: black;
-        background-color: #3498db;
-      }
-
-      body {
-        /* min-width: 1000px;
-
-              min-height: 800px;
-              margin-left: 0px;
-              margin-top: 0px; */
-        color: black;
-      }
       .video-container {
         position: relative;
         height: 88%;
@@ -44,32 +43,7 @@
         width: 65%;
       }
 
-      .container-intervention {
-        position: relative;
-        height: 88%;
-        width: 35%;
-        margin-left: 10px;
-        text-align: left;
-        display: none;
-      }
-
-      #jitsi-surface {
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0px;
-        max-width: 1200px;
-      }
-
-      .flex-container {
-        right: 0px;
-        display: flex;
-        flex-direction: row;
-        width: flex;
-        height: flex;
-      }
-
-      p {
+       p {
         font-size: 16px;
       }
 
@@ -82,19 +56,8 @@
         button {
             margin-right: 5px;
         }
-        #black-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            z-index: 10;
-        }
     </style>
-
-
-    <div class="my-box">
+     <div class="my-box">
 
     <p>
         During the study, you will take part in a <b>virtual group </b> meeting. <br/>
@@ -108,7 +71,84 @@
             The recording stops automatically after a maximum of 5 seconds. You can also stop the recording manually by clicking
             on the blue “Stop recording” button. After you tested your camera and microphone, <b>please confirm the statement below the video recording.</b> </p>
 
-       <div> Placeholder for Video recording </div>
+        <div id="video-container">
+            <video id="video1" autoplay></video>
+         </div>
+        <button id="startBtn" onclick="startRecording()">Start recording</button>
+        <button id="stopBtn" onclick="stopRecording()">Stop recording</button>
+
+         <div>
+            <p>After you tested your camera and microphone, <b>please confirm the statement below the video recording.</b></p>
+        </div>
+        <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        const video = document.getElementById('video1');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+
+        function handleDataAvailable(event) {
+            if (event.data.size > 0) {
+                recordedChunks.push(event.data);
+            }
+        }
+
+        function handleStop() {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            document.body.appendChild(a);
+            a.style = 'display: none';
+            a.href = url;
+            a.download = 'recorded-video.webm';
+            a.click();
+            window.URL.revokeObjectURL(url);
+            stopTracks(stream);
+        }
+
+        function startRecording() {
+            recordedChunks = [];
+            mediaRecorder.start();
+            startBtn.style.display = 'none';
+            stopBtn.style.display = 'inline';
+            setTimeout(() => {
+                if (mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                    startBtn.style.display = 'inline';
+                    stopBtn.style.display = 'none';
+                    video.srcObject = null;
+                    stopTracks(stream);
+                }
+            }, 5000); // Stop recording after 5 seconds
+        }
+
+        function stopRecording() {
+            if (mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                startBtn.style.display = 'inline';
+                stopBtn.style.display = 'none';
+                video.srcObject = null;
+                stopTracks(stream);
+            }
+        }
+        function stopTracks(stream) {
+            stream.getTracks().forEach(track => {
+                track.stop();
+            });
+        }
+
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                video.srcObject = stream;
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = handleDataAvailable;
+                mediaRecorder.onstop = handleStop;
+            })
+            .catch(error => {
+                console.error('Error accessing media devices.', error);
+            });
+    </script>
         <br/>
         <p>Before you can continue, please confirm the following: (If you don’t confirm the statement, you cannot proceed with this study)<br/><br/><p>
 
@@ -140,5 +180,7 @@
          {{formfield 'colorVideo'}} <br/>
         {{formfield 'numberVideo'}}
     </div>
+
+
 {{next_button}}
 {{ endblock }}
