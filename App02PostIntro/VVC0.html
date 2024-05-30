@@ -1,0 +1,152 @@
+{{ extends 'global/Page.html' }}
+{{ block title }} Virtual Video Call{{ endblock }}
+{{ block content }}
+
+<style>
+         .column {
+        float: left;
+        height: 100vh; /* Responsive height */
+        box-sizing: border-box;
+        }
+        .left {
+            width: 70%;
+        }
+        .right {
+            width: 30%;
+            vertical-align: middle;
+            border: 1px solid #000;
+        }
+
+        /* Row style with maximum width and responsive adjustments */
+        .row {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto; /* Center align the row */
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        #meet {
+            width: 100%;
+            height: 100vh; /* Set the height to 70% of the viewport height */
+        }
+
+        /* Responsive layout */
+        @media (max-width: 1200px) {
+            .row {
+                max-width: 1000px;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .row {
+                max-width: 800px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .row {
+                max-width: 600px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .row {
+                max-width: 100%;
+            }
+
+            .column {
+                float: none;
+                width: 100%;
+                height: auto; /* Adjust height to auto for small screens */
+            }
+
+            .left, .right {
+                width: 100%;
+            }
+
+            .right {
+                margin-top: 20px;
+                border: none;
+            }
+        }
+
+
+    </style>
+      <div id ="message"></div><p><b>Please now select your video background.</b> You can just <b>choose any of the provided options as they are all the same image.</b>
+                </p>
+    </div>
+
+    <div class="row">
+        <div class="column left">
+            <div id=meet></div>
+        </div>
+        <div id="container" class="column right">
+
+        </div>
+    </div>
+
+     
+<script src="https://haps-meeting.k8s.iism.kit.edu/external_api.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+    const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
+     const NameParam = {{player.id_in_group}}%4;
+     const TN_name = "P" + {{player.id_in_subsession}}
+     // adjust information to display
+
+    const options = {
+        roomName: "Video Meeting" + {{player.group_id}}, //This is the name of the room, with player's group ID
+        parentNode: document.querySelector('#meet'), //Now, you declare here which element should parent your stream.
+        configOverwrite: {
+            prejoinConfig: {
+                  enabled: false
+            },
+            disableSelfView: false,
+            startWithAudioMuted: false,
+            startWithVideoMuted: false,
+            filmstrip: {
+                 disableResizable: true,
+             },
+
+            participantsPane: {
+             hideModeratorSettingsTab: false,
+             hideMoreActionsButton: false,
+             hideMuteAllButton: false
+            }
+
+
+        }, //You can turn on or off config elements with this prop.
+        interfaceConfigOverwrite: {
+               TOOLBAR_BUTTONS:[],
+               SHOW_JITSI_WATERMARK: false,
+               SHOW_MEETING_NAME: false,
+               SHOW_MEETING_TIMER: false},
+        userInfo: {
+            displayName: TN_name,
+          }
+        }
+        const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
+        //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
+         // Set the virtual background
+        api.addEventListener(`videoConferenceJoined`, () => {
+                setTimeout(() => {
+                          api.executeCommand('toggleVirtualBackgroundDialog');
+                }, 2000);
+
+
+
+     </script>
+
+
+
+
+{{ endblock }}

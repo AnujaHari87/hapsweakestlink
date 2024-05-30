@@ -28,7 +28,7 @@
     }
     img {
         width: auto;                  /* Makes images responsive to their container's width */
-        height: 150px;                /* Sets a fixed height for all images */
+        height: 100px;                /* Sets a fixed height for all images */
         display: block;               /* Ensures the image is a block element */
         margin: 0 auto;               /* Centers the image horizontally */
     }
@@ -53,32 +53,39 @@
 </style>
 
 <div class="my-box">
-    <div class="row justify-content-center">
-    <p><strong>Please select the image that best describes the relationship between you and your team.</strong></p>
-    <div class="image-container">
-        {{ for image in image_data }}
-        <div class="image-label">
-            <div class="image-wrapper">
-                <img src="{{ static image.path }}" alt="{{ image.name }}">
-                <div class="centered-radio-container">
-                    <input type="radio" name="team_cohesion" value="{{ image.name }}" class="persist">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <div class="card border-0 shadow-sm mt-12" style="background-color: #f8f9fa;">
+        <div class="card-body">
+            <p class="card-text text-center">
+            <b>Please select the image that best describes the relationship between you and your team.</b>
+            <div class="image-container">
+                {{ for image in image_data }}
+                <div class="image-label">
+                    <div class="image-wrapper">
+                        <img src="{{ static image.path }}" alt="{{ image.name }}">
+                        <div class="centered-radio-container">
+                            <input type="radio" name="team_cohesion" value="{{ image.name }}" class="persist">
+                        </div>
+                    </div>
                 </div>
+                {{ endfor }}
             </div>
+            {{ formfield_errors 'team_cohesion' }}
+            <script>
+                const errorDiv = document.querySelector('.form-control-errors');
+                if (errorDiv) {
+                    errorDiv.textContent = 'Please select an image to proceed.'
+                }
+            </script>
         </div>
-        {{ endfor }}
+      </div>
     </div>
-    {{ formfield_errors 'team_cohesion' }}
-    <script>
-        const errorDiv = document.querySelector('.form-control-errors');
-        if (errorDiv) {
-            errorDiv.textContent = 'Please select an image to proceed.'
-        }
-    </script>
+  </div>
 </div>
 </div>
-<br/><br/>
-<br/><br/>
-
+<br/>
 {{ next_button }}
 
 {{ endblock }}

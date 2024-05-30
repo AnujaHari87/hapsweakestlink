@@ -63,13 +63,14 @@
         During the study, you will take part in a <b>virtual group </b> meeting. <br/>
         We will therefore check your technical requirements to ensure that the camera, audio, microphone and video work properly.
       <br />
-        Camera and microphone test <br/>
-        <p><b>Please test now whether your camera and microphone work properly by recording a short video. This video
-        is only recorded locally on your device and is not stored on an external server.</b> </p>
+        <br/>
+       <p><b> Camera and microphone test:</b><br/> </p>
+        <p>Please test now whether your camera and microphone work properly by recording a short video. This video
+        is only recorded locally on your device and is not stored on an external server.</p>
         <br /><b>Short instruction to record a video: </b><br/>
         <p>If you click on the blue “Start recording” button, you start recording a video message and the color of the button changes to red.
             The recording stops automatically after a maximum of 5 seconds. You can also stop the recording manually by clicking
-            on the blue “Stop recording” button. After you tested your camera and microphone, <b>please confirm the statement below the video recording.</b> </p>
+            on the blue “Stop recording” button. After you tested your camera and microphone, <b>please confirm the statement below the video recording.</b></p>
 
         <div id="video-container">
             <video id="video1" autoplay></video>
@@ -77,9 +78,6 @@
         <button id="startBtn" onclick="startRecording()">Start recording</button>
         <button id="stopBtn" onclick="stopRecording()">Stop recording</button>
 
-         <div>
-            <p>After you tested your camera and microphone, <b>please confirm the statement below the video recording.</b></p>
-        </div>
         <script>
         let mediaRecorder;
         let recordedChunks = [];
@@ -149,7 +147,7 @@
                 console.error('Error accessing media devices.', error);
             });
     </script>
-        <br/>
+        <br/> <br/>
         <p>Before you can continue, please confirm the following: (If you don’t confirm the statement, you cannot proceed with this study)<br/><br/><p>
 
         <p> <b> MY CAMERA AND MICROPHONE SEEM TO WORK FINE. </b><p>
@@ -180,7 +178,7 @@
          {{formfield 'colorVideo'}} <br/>
         {{formfield 'numberVideo'}}
     </div>
-
+<br/>
 
 {{next_button}}
 {{ endblock }}

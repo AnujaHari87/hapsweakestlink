@@ -19,8 +19,6 @@ class Group(BaseGroup):
     pass
 
 
-
-
 def wait_for_all(group: Group):
     pass
 
@@ -133,6 +131,10 @@ class DescriptionVideoCommunication(Page):
         return holidays
 
 
+class DescriptionVideoCommunication1(Page):
+    form_model = 'player'
+
+
 class WaitBeforeVideo(WaitPage):
     after_all_players_arrive = goal_wait_for_all
     title_text = 'Please wait till all players have entered the meeting.'
@@ -143,9 +145,13 @@ class VVC(Page):
     timeout_seconds = 240
 
 
+class VVC0(Page):
+    form_model = 'group'
+    timeout_seconds = 30
+
+
 class EndVVC(Page):
     form_model = 'player'
-
 
 
 class StudyIntroduction1(Page):
@@ -158,9 +164,14 @@ class StudyIntroduction2(Page):
 
 class StudyIntroduction3(Page):
     form_model = 'player'
+
+
+class StudyIntroduction4(Page):
+    form_model = 'player'
     form_fields = ['comprehension1', 'comprehension2', 'comprehension3', 'comprehension4a', 'comprehension4b',
                    'comprehension4c']
 
 
-page_sequence = [WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1, StudyIntroduction2,
-                 StudyIntroduction3]
+page_sequence = [WaitBeforeVideo, VVC0, DescriptionVideoCommunication1, VVC, EndVVC, StudyIntroduction1,
+                 StudyIntroduction2,
+                 StudyIntroduction3, StudyIntroduction4]

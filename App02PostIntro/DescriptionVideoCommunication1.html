@@ -1,0 +1,25 @@
+{{ extends 'global/Page.html' }}
+{{ block title }}Description of Part 1{{ endblock }}
+
+{{ block content }}
+
+<style>
+    .my-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="my-box">
+
+    <p> On the following screen, please give permission to perform the recording of the video meeting. <br/>
+        To do this select the video call browser window from the list in the popup and click "Share".
+        <br/>Once all members agree and join, the meeting will start.<br/>
+     </p>
+
+</div>
+<br/>
+{{ next_button }}
+
+{{ endblock }}

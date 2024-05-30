@@ -47,7 +47,11 @@ class EnterProlificId(Page):
     form_fields = ['ProlificId']
 
 
-class ConsentForm(Page):
+class ConsentFormA(Page):
+    form_model = 'player'
+
+
+class ConsentFormB(Page):
     form_model = 'player'
     form_fields = ['consent', 'optInConsent']
 
@@ -55,7 +59,6 @@ class ConsentForm(Page):
     def app_after_this_page(player: Player, upcoming_apps):
         if player.consent == 0:
             return 'App07ConsentThankYou'
-
 
 class AudioVideoCheck(Page):
     form_model = 'player'
@@ -86,5 +89,5 @@ class Interventions(Page):
     form_model = 'player'
 
 
-page_sequence = [EnterProlificId, ConsentForm, AudioVideoCheck, GeneralInformation,
+page_sequence = [GeneralInformation, ConsentFormA, ConsentFormB, AudioVideoCheck, EnterProlificId,
                  PartsRoundsGroups]

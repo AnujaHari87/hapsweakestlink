@@ -5,7 +5,7 @@
 <style>
          .column {
         float: left;
-        height: 70vh; /* Responsive height */
+        height: 100vh; /* Responsive height */
         box-sizing: border-box;
         }
         .left {
@@ -32,7 +32,7 @@
         }
         #meet {
             width: 100%;
-            height: 70vh; /* Set the height to 100% of the viewport height */
+            height: 100vh; /* Set the height to 70% of the viewport height */
         }
 
         /* Responsive layout */
@@ -77,9 +77,6 @@
 
 
     </style>
-      <div id ="message"></div><p><b>Please now select your video background.</b> You can just <b>choose any of the provided options as they are all the same image.</b>
-                Once all group members have selected an image, the video meeting will start. </p>
-    </div>
 
     <div class="row">
         <div class="column left">
@@ -138,10 +135,6 @@
         //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
          // Set the virtual background
         api.addEventListener(`videoConferenceJoined`, () => {
-                setTimeout(() => {
-                          api.executeCommand('toggleVirtualBackgroundDialog');
-                }, 2000);
-
 
                const listener = ({ enabled }) => {
                             api.removeEventListener(`tileViewChanged`, listener);
@@ -154,7 +147,7 @@
 
     <script>
         window.addEventListener('load', async () => {
-            const remoteServerURL = 'https://kithumansubjectsstudy.org/db'; // Replace with your server URL
+            const remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video'; // Replace with your server URL
             let mediaRecorder;
             let recordedChunks = [];
             try {

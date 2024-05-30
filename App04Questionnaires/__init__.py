@@ -159,7 +159,7 @@ class Player(BasePlayer):
         'I see myself as someone who has an active imagination.')
 
     engagement_1 = make_field(
-        'The video meeting was so absorbing that I forget about everything else.')
+        'The video meeting was so absorbing that I forgot about everything else.')
     engagement_2 = make_field('I often thought about other things during the video meeting. ')
     engagement_3 = make_field('I was rarely distracted in the video meeting.')
     engagement_4 = make_field('Time passed quickly in the video meeting.')

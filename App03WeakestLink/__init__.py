@@ -65,6 +65,8 @@ class Decision(Page):
 
 
 class CalculatePayoff(WaitPage):
+   
+
     body_text = "Please wait until your team members have made their decision."
 
     @staticmethod
