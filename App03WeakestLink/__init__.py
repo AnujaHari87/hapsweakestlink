@@ -5,7 +5,12 @@ c = cu
 
 doc = ''
 
-
+def make_field(label):
+    return models.IntegerField(
+        choices=[0, 10, 20, 30,40],
+        label=label,
+        widget=widgets.RadioSelect,
+    )
 class C(BaseConstants):
     NAME_IN_URL = 'App03WeakestLink'
     PLAYERS_PER_GROUP = 4
@@ -26,9 +31,9 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    ownDecision = models.IntegerField(
-        blank=False, min=0, max=40
-    )
+
+    ownDecision= make_field("Please choose one")
+
     payoff_hypo = models.IntegerField()
 
 
@@ -51,6 +56,9 @@ class Instructions3(Page):
 
 
 class Decision(Page):
+    form_model = 'player'
+    form_fields = ['ownDecision']
+
     @staticmethod
     def live_method(player: Player, data):
         if "ownDecision" in data:

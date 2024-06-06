@@ -40,7 +40,7 @@ def make_field(label):
 
 
 class Player(BasePlayer):
-    holidays_1 = make_field('sun, sea, and beach holiday.')
+    holidays_1 = make_field('Sun, sea, and beach holiday.')
     holidays_2 = make_field('Party holiday.')
     holidays_3 = make_field('Winter sports holiday.')
     holidays_4 = make_field('City trip.')
@@ -86,37 +86,61 @@ class Player(BasePlayer):
 def comprehension1_error_message(player: Player, value):
     if value != 200:
         player.comp1_check += 1
-        return "Unfortunately, that's incorrect. The correct answer is <strong>200</strong>."
+        if player.comp1_check == 1:
+            return "Unfortunately, that's incorrect. Please try again."
+        if player.comp1_check >= 2:
+            return "Unfortunately, that's incorrect. The correct answer is <strong>200</strong>."
+    return None  # Allow the participant to try again if they haven't clicked incorrectly twice
 
 
 def comprehension2_error_message(player: Player, value):
     if value != 160:
         player.comp2_check += 1
-        return "Unfortunately, that's incorrect. The correct answer is <strong>160</strong>."
+        if player.comp2_check == 1:
+            return "Unfortunately, that's incorrect. Please try again."
+        elif player.comp2_check >= 2:
+            return "Unfortunately, that's incorrect. The correct answer is <strong>160</strong>."
+    return None
 
 
 def comprehension3_error_message(player: Player, value):
     if value != 180:
         player.comp3_check += 1
-        return "Unfortunately, that's incorrect. The correct answer is <strong>180</strong>."
+        if player.comp3_check == 1:
+            return "Unfortunately, that's incorrect. Please try again."
+        elif player.comp3_check >= 2:
+            return "Unfortunately, that's incorrect. The correct answer is <strong>180</strong>."
+    return None
 
 
 def comprehension4a_error_message(player: Player, value):
     if not value:
         player.comp4_check += 1
-        return "Unfortunately, that's incorrect. Your compensation depends on the <strong>number of hours you work on Project A</strong> and the <strong>fewest number of hours worked by a member of your team on Project A</strong>."
+        if player.comp4_check == 1:
+            return "Unfortunately, that's incorrect. Please try again."
+        elif player.comp4_check >= 2:
+            return "Unfortunately, that's incorrect. Your compensation depends on the <strong>number of hours you work on Project A</strong> and the <strong>fewest number of hours worked by a member of your team on Project A</strong>."
+    return None
 
 
 def comprehension4b_error_message(player: Player, value):
     if value:
         player.comp4_check += 1
-        return "Unfortunately, that's incorrect. Your compensation depends on the <strong>number of hours you work on Project A</strong> and the <strong>fewest number of hours worked by a member of your team on Project A</strong>."
+        if player.comp4_check == 1:
+            return "Unfortunately, that's incorrect. Please try again."
+        elif player.comp4_check >= 2:
+            return "Unfortunately, that's incorrect. Your compensation depends on the <strong>number of hours you work on Project A</strong> and the <strong>fewest number of hours worked by a member of your team on Project A</strong>."
+    return None
 
 
 def comprehension4c_error_message(player: Player, value):
     if not value:
         player.comp4_check += 1
-        return "Unfortunately, that's incorrect. Your compensation depends on the <strong>number of hours you work on Project A</strong> and the <strong>fewest number of hours worked by a member of your team on Project A</strong>."
+        if player.comp4_check == 1:
+            return "Unfortunately, that's incorrect. Please try again."
+        elif player.comp4_check >= 2:
+            return "Unfortunately, that's incorrect. Your compensation depends on the <strong>number of hours you work on Project A</strong> and the <strong>fewest number of hours worked by a member of your team on Project A</strong>."
+    return None
 
 
 class DescriptionVideoCommunication(Page):
@@ -135,19 +159,24 @@ class DescriptionVideoCommunication1(Page):
     form_model = 'player'
 
 
+class WaitBeforeVideoTest(WaitPage):
+    after_all_players_arrive = goal_wait_for_all
+    title_text = 'Please wait till all players have entered the test video meeting.'
+
+
 class WaitBeforeVideo(WaitPage):
     after_all_players_arrive = goal_wait_for_all
-    title_text = 'Please wait till all players have entered the meeting.'
+    title_text = 'Please wait till all players have entered the video meeting.'
 
 
 class VVC(Page):
     form_model = 'group'
-    timeout_seconds = 240
+    timeout_seconds = 900
 
 
 class VVC0(Page):
     form_model = 'group'
-    timeout_seconds = 30
+    timeout_seconds = 60
 
 
 class EndVVC(Page):
@@ -172,6 +201,26 @@ class StudyIntroduction4(Page):
                    'comprehension4c']
 
 
-page_sequence = [WaitBeforeVideo, VVC0, DescriptionVideoCommunication1, VVC, EndVVC, StudyIntroduction1,
-                 StudyIntroduction2,
-                 StudyIntroduction3, StudyIntroduction4]
+class Comprehension1(Page):
+    form_model = 'player'
+    form_fields = ['comprehension1']
+
+
+class Comprehension2(Page):
+    form_model = 'player'
+    form_fields = ['comprehension2']
+
+
+class Comprehension3(Page):
+    form_model = 'player'
+    form_fields = ['comprehension3']
+
+
+class Comprehension4(Page):
+    form_model = 'player'
+    form_fields = ['comprehension4a', 'comprehension4b', 'comprehension4c']
+
+
+page_sequence = [DescriptionVideoCommunication, WaitBeforeVideoTest, VVC0, DescriptionVideoCommunication1,
+                 WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1,
+                 StudyIntroduction2, StudyIntroduction3, Comprehension1, Comprehension2, Comprehension3, Comprehension4]
