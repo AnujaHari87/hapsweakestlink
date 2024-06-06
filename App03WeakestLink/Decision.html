@@ -45,6 +45,9 @@
     .btn-primary {
         float: left;
         display: none;
+        color: #fff;
+        background-color: #0d6efd;
+        border-color: #0d6efd
     }
 
     datalist {
@@ -73,7 +76,6 @@
     <fieldset>
         <legend><b>Please now decide how many hours you would like to work on Project A. The remaining hours will be allocated to your individual Project B.</b></legend>
           {{ include_sibling 'PayoffTable.html' }}
-
         <br/>
         <p> Please choose one:</p>
         <label for="ownDecision0">
@@ -97,7 +99,7 @@
 </form>
  </div>
       <br/>
-    <button type="submit" class="btn-primary" style="display: none;">Next</button>
+    <button type="submit" class="otree-btn-next btn btn-primary">Next</button>
 
         <script>
  document.addEventListener("DOMContentLoaded", function() {
@@ -105,7 +107,6 @@
     let row = document.querySelector("tbody").children[3];
     let rowA = Array.from(row.children);
     rowA.shift();
-
     const radioButtons = document.querySelectorAll('input[name="ownDecision"]');
 
     radioButtons.forEach(radio => {
