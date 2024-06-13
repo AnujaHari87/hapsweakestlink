@@ -70,9 +70,10 @@
 {{ endblock }}
 
 {{ block content }}
-    <div class="my-box">
+
     <br>
-   <form id="decisionForm">
+
+       <div class="my-box">
     <fieldset>
         <legend><b>Please now decide how many hours you would like to work on Project A. The remaining hours will be allocated to your individual Project B.</b></legend>
           {{ include_sibling 'PayoffTable.html' }}
@@ -94,21 +95,23 @@
             <input type="radio" id="ownDecision40" name="ownDecision" value="40"> 40 &nbsp;&nbsp;
         </label>
     </fieldset><br/>
+     <br/>
+        </div>
+        <br/>
+ {{ next_button }}
 
 
-</form>
- </div>
-      <br/>
-    <button type="submit" class="otree-btn-next btn btn-primary">Next</button>
+{{ endblock }}
 
-        <script>
+{{ block scripts }}
+<script>
+
  document.addEventListener("DOMContentLoaded", function() {
     const nextBtn = document.querySelector(".btn-primary");
     let row = document.querySelector("tbody").children[3];
     let rowA = Array.from(row.children);
     rowA.shift();
     const radioButtons = document.querySelectorAll('input[name="ownDecision"]');
-
     radioButtons.forEach(radio => {
         radio.addEventListener("change", function() {
             const val = this.value;
@@ -132,6 +135,7 @@
                     nextBtn.style.display = "none";
             }
         });
+
     });
 
     function updateSelection(rowIndex) {
@@ -142,22 +146,22 @@
         rowA.forEach(el => el.classList.add("selected"));
         nextBtn.style.display = "block";
     }
-
-    document.getElementById("decisionForm").onsubmit = function(event) {
-        event.preventDefault();
-        const selectedValue = document.querySelector('input[name="ownDecision"]:checked').value;
-        liveSend({
-            "ownDecision": parseInt(selectedValue)
-        });
-    };
 });
+     document.onsubmit = () => {
+            console.log("Next button clicked 2");
+            const radios = document.getElementsByName("ownDecision");
+            let selectedValue;
+            for (const radio of radios) {
+                if (radio.checked) {
+                    selectedValue = radio.value;
+                    break;
+                }
+            }
+
+            liveSend({
+                "ownDecision": parseInt(selectedValue)
+            });
+            }
 </script>
-
-{{ next_button }}
-{{ endblock }}
-
-{{ block scripts }}
-
-
 
 {{ endblock }}

@@ -6,8 +6,8 @@ doc = ''
 
 
 class C(BaseConstants):
-    NAME_IN_URL = '01_Post_Intro'
-    PLAYERS_PER_GROUP = 4
+    NAME_IN_URL = '02_Post_Intro'
+    PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
 
 
@@ -52,7 +52,6 @@ class Player(BasePlayer):
     comp2_check = models.IntegerField(initial=0)
     comp3_check = models.IntegerField(initial=0)
     comp4_check = models.IntegerField(initial=0)
-
     comprehension1 = models.IntegerField(
         label='<br><strong>What would be your compensation if you work 0 hours on Project A '
               'and the lowest contribution of a team member to Project A is 10 hours?</strong>', min=0, max=240)
@@ -143,6 +142,24 @@ def comprehension4c_error_message(player: Player, value):
     return None
 
 
+def group_by_arrival_time_method(subsession: Subsession, waiting_players):
+    # we now place users into different baskets, according to their group in the previous app.
+    # the dict 'd' will contain all these baskets.
+
+    d = {}
+    for p in waiting_players:
+        group_id = p.participant.past_group_id
+        if group_id not in d:
+            # since 'd' is initially empty, we need to initialize an empty list (basket)
+            # each time we see a new group ID.
+            d[group_id] = []
+        players_in_my_group = d[group_id]
+        players_in_my_group.append(p)
+        if len(players_in_my_group) == 4:
+            return players_in_my_group
+        # print('d is', d)
+
+
 class DescriptionVideoCommunication(Page):
     form_model = 'player'
 
@@ -150,13 +167,23 @@ class DescriptionVideoCommunication(Page):
     def get_form_fields(player):
         import random
         holidays = ['holidays_1', 'holidays_2', 'holidays_3', 'holidays_4',
-                    'holidays_5', 'holidays_6', 'holidays_7']
+                    'holidays_5', 'holidays_6', 'holidays_7', 'holidays_8']
         random.shuffle(holidays)
         return holidays
 
 
 class DescriptionVideoCommunication1(Page):
     form_model = 'player'
+
+
+class GroupWaitPage(WaitPage):
+    wait_for_all_groups = False
+    body_text = 'Please wait till all players in your group have entered the test video meeting.'
+    after_all_players_arrive = goal_wait_for_all
+
+
+class GroupWaitPage0(WaitPage):
+    group_by_arrival_time = True
 
 
 class WaitBeforeVideoTest(WaitPage):
@@ -172,6 +199,11 @@ class WaitBeforeVideo(WaitPage):
 class VVC(Page):
     form_model = 'group'
     timeout_seconds = 120
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        optInConsent = player.participant.vars['optInConsent']
+        return dict(optInConsent=optInConsent)
 
 
 class VVC0(Page):
@@ -221,6 +253,6 @@ class Comprehension4(Page):
     form_fields = ['comprehension4a', 'comprehension4b', 'comprehension4c']
 
 
-page_sequence = [DescriptionVideoCommunication, WaitBeforeVideoTest, VVC0, DescriptionVideoCommunication1,
+page_sequence = [GroupWaitPage0, DescriptionVideoCommunication, GroupWaitPage, VVC0, DescriptionVideoCommunication1,
                  WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1,
                  StudyIntroduction2, StudyIntroduction3, Comprehension1, Comprehension2, Comprehension3, Comprehension4]

@@ -3,16 +3,16 @@
 {{ block content }}
 
 <style>
-         .column {
+        .column {
         float: left;
-        height: 70vh; /* Responsive height */
+        height: 100vh; /* Responsive height */
         box-sizing: border-box;
         }
         .left {
-            width: 70%;
+            width: 80%;
         }
         .right {
-            width: 30%;
+            width: 20%;
             vertical-align: middle;
             border: 1px solid #000;
         }
@@ -32,7 +32,7 @@
         }
         #meet {
             width: 100%;
-            height: 70vh; /* Set the height to 100% of the viewport height */
+            height: 100vh; /* Set the height to 100% of the viewport height */
         }
 
         /* Responsive layout */
@@ -62,7 +62,7 @@
             .column {
                 float: none;
                 width: 100%;
-                height: 70vh; /* Adjust height to auto for small screens */
+                height: 100vh; /* Adjust height to auto for small screens */
             }
 
             .left, .right {
@@ -74,7 +74,6 @@
                 border: none;
             }
         }
-
 
     </style>
       <div id ="message"></div><p><b>Before the video meeting starts, we ask you to select a video background which is identical for all group members. <br/>
@@ -94,7 +93,7 @@
 
     </div>
 
-     
+
 <script src="https://haps-meeting.k8s.iism.kit.edu/external_api.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -128,7 +127,7 @@
                SHOW_MEETING_TIMER: false,
                TILE_VIEW_MAX_COLUMNS: 2,
                TILE_VIEW_ENABLED: true
-       },
+             },
         userInfo: {
             displayName: TN_name,
           }
@@ -141,7 +140,6 @@
                           api.executeCommand('toggleVirtualBackgroundDialog');
                 }, 2000);
 
-                 api.executeCommand('setTileView', true);
 
 
         });

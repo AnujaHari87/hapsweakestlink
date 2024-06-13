@@ -9,7 +9,7 @@ Your app description
 
 class Constants(BaseConstants):
     name_in_url = 'App04Questionnaires'
-    players_per_group = 4
+    players_per_group = None
     num_rounds = 1
 
 
@@ -367,5 +367,23 @@ class Results(Page):
     pass
 
 
-page_sequence = [IntroPart3, Quest01, Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10, Quest11,
-                 QuestDemographics, QuestEnd]
+def group_by_arrival_time_method(subsession: Subsession, waiting_players):
+    # we now place users into different baskets, according to their group in the previous app.
+    # the dict 'd' will contain all these baskets.
+    d = {}
+    for p in waiting_players:
+        group_id = p.participant.past_group_id
+        if group_id not in d:
+            # since 'd' is initially empty, we need to initialize an empty list (basket)
+            # each time we see a new group ID.
+            d[group_id] = []
+        players_in_my_group = d[group_id]
+        players_in_my_group.append(p)
+        if len(players_in_my_group) == 4:
+            return players_in_my_group
+        # print('d is', d)
+
+class GroupWaitPage0(WaitPage):
+   group_by_arrival_time = True
+
+page_sequence = [GroupWaitPage0, IntroPart3, Quest01, Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10, Quest11, QuestDemographics, QuestEnd]

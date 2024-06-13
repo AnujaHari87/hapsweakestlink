@@ -11,15 +11,26 @@ def make_field(label):
         label=label,
         widget=widgets.RadioSelect,
     )
+
 class C(BaseConstants):
     NAME_IN_URL = 'App03WeakestLink'
-    PLAYERS_PER_GROUP = 4
+    PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 5
     ENDOWMENT = 200
 
 
 class Subsession(BaseSubsession):
-    pass
+    def creating_session(subsession: BaseSubsession):
+      if subsession.round_number == 1:
+        # Assign a unique ID to each group
+        for group in subsession.get_groups():
+            group.group_id = group.id_in_subsession
+
+    def before_next_round(subsession: BaseSubsession):
+        if subsession.round_number > 1:
+            for group in subsession.get_groups():
+                previous_round_group = group.in_round(subsession.round_number - 1)
+                group.group_id = previous_round_group.group_id
 
 class Group(BaseGroup):
     groupMin = models.IntegerField(
@@ -67,29 +78,38 @@ class Decision(Page):
             if player.ownDecision < group.groupMin:
                 group.groupMin = player.ownDecision
 
+
     @staticmethod
     def vars_for_template(player: Player):
         return dict(round_num=player.round_number)
 
 
 class CalculatePayoff(WaitPage):
-   
-
     body_text = "Please wait until your team members have made their decision."
+    group_id = models.IntegerField()
 
     @staticmethod
     def after_all_players_arrive(group: Group):
         for p in group.get_players():
             p.payoff_hypo = C.ENDOWMENT + (6 * group.groupMin) - (5 * p.ownDecision)
+
         if group.round_number == 5:
             print('we are getting here')
             group.randomNumber = random.choice(range(1, 6))
             for p in group.get_players():
-                p_past = p.in_round(group.randomNumber)
-                g_past = group.in_round(group.randomNumber)
-                p.payoff = C.ENDOWMENT + (6 * g_past.groupMin) - (5 * p_past.ownDecision)
-                part = p.participant
-                print(p.payoff)
+                try:
+                    previous_group = [g for g in group.subsession.get_groups() if g.round_number == group.randomNumber and g.group_id == group.group_id]
+                    if previous_group:
+                        g_past = previous_group[0]
+                        p_past = p.in_round(group.randomNumber)
+                        p.payoff = C.ENDOWMENT + (6 * g_past.groupMin) - (5 * p_past.ownDecision)
+                        part = p.participant
+                        print(p.payoff)
+                    else:
+                        raise ValueError('Group ID not found in previous round')
+                except ValueError as e:
+                    print(f'Error: {e}; skipping player {p.id_in_group}')
+
 
 class Results(Page):
     @staticmethod
@@ -102,5 +122,23 @@ class Results(Page):
             round_num=player.round_number
         )
 
+def group_by_arrival_time_method(subsession: Subsession, waiting_players):
+    # we now place users into different baskets, according to their group in the previous app.
+    # the dict 'd' will contain all these baskets.
+    d = {}
+    for p in waiting_players:
+        group_id = p.participant.past_group_id
+        if group_id not in d:
+            # since 'd' is initially empty, we need to initialize an empty list (basket)
+            # each time we see a new group ID.
+            d[group_id] = []
+        players_in_my_group = d[group_id]
+        players_in_my_group.append(p)
+        if len(players_in_my_group) == 4:
+            return players_in_my_group
+        # print('d is', d)
+class GroupWaitPage0(WaitPage):
+   group_by_arrival_time = True
 
-page_sequence = [Decision, CalculatePayoff, Results]
+page_sequence = [GroupWaitPage0,
+                 Decision, CalculatePayoff, Results]
