@@ -12,7 +12,8 @@ class C(BaseConstants):
 
 
 class Subsession(BaseSubsession):
-    pass
+    def creating_session(self):
+        self.group_like_round(1)
 
 
 class Group(BaseGroup):
@@ -142,24 +143,6 @@ def comprehension4c_error_message(player: Player, value):
     return None
 
 
-def group_by_arrival_time_method(subsession: Subsession, waiting_players):
-    # we now place users into different baskets, according to their group in the previous app.
-    # the dict 'd' will contain all these baskets.
-
-    d = {}
-    for p in waiting_players:
-        group_id = p.participant.past_group_id
-        if group_id not in d:
-            # since 'd' is initially empty, we need to initialize an empty list (basket)
-            # each time we see a new group ID.
-            d[group_id] = []
-        players_in_my_group = d[group_id]
-        players_in_my_group.append(p)
-        if len(players_in_my_group) == 4:
-            return players_in_my_group
-        # print('d is', d)
-
-
 class DescriptionVideoCommunication(Page):
     form_model = 'player'
 
@@ -179,11 +162,8 @@ class DescriptionVideoCommunication1(Page):
 class GroupWaitPage(WaitPage):
     wait_for_all_groups = False
     body_text = 'Please wait till all players in your group have entered the test video meeting.'
+
     after_all_players_arrive = goal_wait_for_all
-
-
-class GroupWaitPage0(WaitPage):
-    group_by_arrival_time = True
 
 
 class WaitBeforeVideoTest(WaitPage):
@@ -253,6 +233,6 @@ class Comprehension4(Page):
     form_fields = ['comprehension4a', 'comprehension4b', 'comprehension4c']
 
 
-page_sequence = [GroupWaitPage0, DescriptionVideoCommunication, GroupWaitPage, VVC0, DescriptionVideoCommunication1,
+page_sequence = [DescriptionVideoCommunication, GroupWaitPage, VVC0, DescriptionVideoCommunication1,
                  WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1,
                  StudyIntroduction2, StudyIntroduction3, Comprehension1, Comprehension2, Comprehension3, Comprehension4]

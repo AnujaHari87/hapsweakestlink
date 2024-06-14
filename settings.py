@@ -9,7 +9,7 @@ LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = ''
 USE_POINTS = False
 DEMO_PAGE_INTRO_HTML = ''
-PARTICIPANT_FIELDS = ['optInConsent', 'consent', 'micAndCameraCheck', 'numberVideo', 'colorVideo','past_group_id']
+PARTICIPANT_FIELDS = ['optInConsent', 'consent', 'micAndCameraCheck', 'numberVideo', 'colorVideo','payoff_ppg', 'payoff_round']
 SESSION_FIELDS = []
 ROOMS = [
     dict(

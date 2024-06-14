@@ -19,13 +19,9 @@ class Group(BaseGroup):
     pass
 
 
-def wait_for_all(group: Group):
-    pass
-
-
 class Player(BasePlayer):
     ProlificId = models.StringField(label='Prolific ID')
-    consent = models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']], label='Consent',
+    consent = models.IntegerField(blank=False, choices=[[0, '0'], [1, '1']], label='Consent',
                                   attrs={"invisible": True})
     optInConsent = models.IntegerField(blank=True, initial=0, choices=[[0, '0'], [1, '1']], label='Opt-In Consent',
                                        attrs={"invisible": True})
@@ -37,6 +33,9 @@ class Player(BasePlayer):
                                             label='',
                                             attrs={"invisible": True})
 
+
+def wait_for_all(group: Group):
+    pass
 
 class GeneralInformation(Page):
     form_model = 'player'

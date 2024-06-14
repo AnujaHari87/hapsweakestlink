@@ -14,7 +14,8 @@ class Constants(BaseConstants):
 
 
 class Subsession(BaseSubsession):
-    pass
+    def creating_session(self):
+        self.group_like_round(1)
 
 
 class Group(BaseGroup):
@@ -24,6 +25,14 @@ class Group(BaseGroup):
 def make_field(label):
     return models.IntegerField(
         choices=[1, 2, 3, 4, 5],
+        label=label,
+        widget=widgets.RadioSelect,
+    )
+
+
+def make_field7(label):
+    return models.IntegerField(
+        choices=[1, 2, 3, 4, 5, 6, 7],
         label=label,
         widget=widgets.RadioSelect,
     )
@@ -61,20 +70,10 @@ class Player(BasePlayer):
     team_cohesion = models.StringField()
     payoff_quests = models.IntegerField()
     attention_check = models.IntegerField(initial=0)
-    social_cohesion_1 = make_field('I felt accepted by the team.')
-    social_cohesion_2 = make_field('In my team we trust each other.')
-    social_cohesion_3 = make_field('The members like and care about each other.')
-    social_cohesion_4 = make_field('The members try to understand why they do things they do; try to reason it out.')
-    social_cohesion_5 = make_field(
-        'The members feel a sense of participation.')
-    social_cohesion_6 = make_field('The members appear to do things the way they think will be acceptable to the team.')
-    social_cohesion_7 = make_field('The members reveal sensitive personal information or feelings.')
-    attention1 = make_field('Please select the option "strongly disagree" to show that you are answering the questions attentively.')
-
-
+    social_cohesion_short = make_field7('')
     risk = make_field2('')
-
-    time_1 = make_field2('How willing are you to give up something that is beneficial for you today in order to benefit more from that in the future?')
+    time_1 = make_field2(
+        'How willing are you to give up something that is beneficial for you today in order to benefit more from that in the future?')
 
     negative_rp_1 = make_field2(
         'How willing are you to punish someone who treats you unfairly, even if there may be costs for you?')
@@ -83,6 +82,7 @@ class Player(BasePlayer):
     altruism_1 = make_field2(
         'How willing are you to give to good causes without expecting anything in return?')
     attention2 = make_field2('Please select the option "7" to show that you are answering the questions attentively.')
+    attention1 = make_field('Please select the option "1" to show that you are answering the questions attentively.')
 
     positive_rp_1 = make_field2('When someone does me a favor, I am willing to return it.')
     negative_rp_3 = make_field2(
@@ -177,7 +177,8 @@ class Player(BasePlayer):
     ethnicity = models.IntegerField(
         label="<br>Which of the following <b>ethnicities</b> best describes you?<br/>",
         choices=[[1, 'Asian or Pacific Islander'], [2, 'Black or African American'], [3, 'Hispanic or Latino'],
-                 [4, 'Native American or Alaskan Native'], [5, 'White or Caucasian'], [6, 'Multiracial or Biracial'], [7, 'A race/ethnicity not listed here']])
+                 [4, 'Native American or Alaskan Native'], [5, 'White or Caucasian'], [6, 'Multiracial or Biracial'],
+                 [7, 'A race/ethnicity not listed here']])
     familiarity = models.IntegerField(
         label="<br>Please indicate whether you have ever <b>met a member of your team before </b> participating in this study</strong>.",
         choices=[[1, 'No, never met before'], [2, 'Yes, met in passing'],
@@ -187,14 +188,18 @@ class Player(BasePlayer):
         label="<br>What is the highest level of <b>education</b> you have completed?</br>",
         choices=[[1, 'less than High School'], [2, 'High School/GED'], [3, 'Some College'],
                  [4, '2-year College degree'], [5, '4-year College degree'],
-                 [6, 'Master’s degree'],[7, 'Doctoral degree or Professional Degree (JD, MD)']])
+                 [6, 'Master’s degree'], [7, 'Doctoral degree or Professional Degree (JD, MD)']])
     prolifichours_month = models.IntegerField(
         label="<br>How many days per month do you typically use Prolific?</br>", min=0, max=31)
     prolifichours_day = models.IntegerField(
         label="<br>On the days when you use Prolific, how many hours do you typically spend on it?</br>", min=1, max=24)
-    prolificprimary_income = models.IntegerField(label="Is Prolific your primary source of income?",
-                                                 choices=[[1,'Yes'], [2,'No'],[3,'Other, please specify']])
+    prolificprimary_income = models.IntegerField(label="Is Prolific your primary source of income?", blank=True,
+                                                 choices=[[1, 'Yes'], [2, 'No'], [3, 'Other, please specify']])
     random = models.CurrencyField()
+    other_income_specify = models.StringField(
+        blank=True,
+        label="Other"
+    )
 
 
 # PAGES
@@ -206,7 +211,6 @@ class IntroPart3(Page):
 class Quest01(Page):
     form_model = 'player'
     form_fields = ['team_cohesion']
-
 
     def vars_for_template(self: Player):
         image_names = [
@@ -220,23 +224,11 @@ class Quest01(Page):
         ]
         return dict(image_data=make_image_data(image_names))
 
+
 class Quest02(Page):
     form_model = 'player'
-
+    form_fields = ['social_cohesion_short']
     # usability, satisfaction, intention to use
-    @staticmethod
-    def get_form_fields(player):
-        import random
-        soco = ['social_cohesion_1', 'social_cohesion_2', 'social_cohesion_3', 'social_cohesion_4', 'social_cohesion_5',
-                'social_cohesion_6', 'social_cohesion_7','attention1']
-        random.shuffle(soco)
-        return soco
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        if player.attention1 != 1:
-            player.attention_check += 1
-
 
 
 class Quest03(Page):
@@ -277,7 +269,12 @@ class Quest07(Page):
 class Quest07a(Page):
     form_model = 'player'
     form_fields = ['big5_1', 'big5_2', 'big5_3', 'big5_4', 'big5_5',
-                   'big5_6', 'big5_7', 'big5_8', 'big5_9', 'big5_10']
+                   'big5_6', 'big5_7', 'big5_8', 'big5_9', 'big5_10', 'attention1']
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        if player.attention1 != 1:
+            player.attention_check += 1
 
 
 class Quest08(Page):
@@ -306,10 +303,10 @@ class Quest09(Page):
     form_model = 'player'
 
 
-
 class QuestDemographics(Page):
     form_model = 'player'
-    form_fields = ['age', 'gender', 'education', 'ethnicity', 'prolifichours_month', 'prolifichours_day','prolificprimary_income','familiarity']
+    form_fields = ['age', 'gender', 'education', 'ethnicity', 'prolifichours_month',
+                   'prolifichours_day', 'prolificprimary_income', 'other_income_specify', 'familiarity']
 
 
 class QuestAR(Page):
@@ -351,11 +348,14 @@ class Quest11(Page):
 
 
 class QuestEnd(Page):
+
     @staticmethod
     def vars_for_template(player: Player):
         participant = player.participant
+
         return dict(
-            total_payoff=(200 + participant.payoff) * 0.03
+            total_payoff_ecu=(200 + participant.payoff_ppg),
+            total_payoff=(200 + participant.payoff_ppg) * 0.03
         )
 
 
@@ -367,23 +367,5 @@ class Results(Page):
     pass
 
 
-def group_by_arrival_time_method(subsession: Subsession, waiting_players):
-    # we now place users into different baskets, according to their group in the previous app.
-    # the dict 'd' will contain all these baskets.
-    d = {}
-    for p in waiting_players:
-        group_id = p.participant.past_group_id
-        if group_id not in d:
-            # since 'd' is initially empty, we need to initialize an empty list (basket)
-            # each time we see a new group ID.
-            d[group_id] = []
-        players_in_my_group = d[group_id]
-        players_in_my_group.append(p)
-        if len(players_in_my_group) == 4:
-            return players_in_my_group
-        # print('d is', d)
-
-class GroupWaitPage0(WaitPage):
-   group_by_arrival_time = True
-
-page_sequence = [GroupWaitPage0, IntroPart3, Quest01, Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10, Quest11, QuestDemographics, QuestEnd]
+page_sequence = [IntroPart3, Quest01, Quest02, Quest03, Quest04, Quest05, Quest06, Quest07, Quest07a, Quest08, Quest10,
+                 Quest11, QuestDemographics, QuestEnd]

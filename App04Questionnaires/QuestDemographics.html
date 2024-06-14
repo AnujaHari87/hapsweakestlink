@@ -21,7 +21,30 @@
           <p class="card-text text-center">
               <b>Please provide the following personal details to conclude.</b></p>
 
-{{ formfields }}
+            {{ formfield 'age' }}
+            {{ formfield 'gender' }}
+            {{ formfield 'education' }}
+            {{ formfield 'ethnicity' }}
+            {{ formfield 'prolifichours_month' }}
+            {{ formfield 'prolifichours_day' }}
+          <div class="form-group">
+              <label for="incomeProlific" class="control-label col-form-label">Is Prolific your primary source of income?</label>
+              <div>
+                <select name="incomeProlific" id="incomeProlific" class="form-select">
+                    <option value="" selected disabled hidden>--------</option>
+                    <option value="1">Yes</option>
+                    <option value="2">No</option>
+                    <option value="3">Other, please specify</option>
+                </select>
+              </div>
+            </div>
+
+
+             <div id="other_income_specify_container" style="display:none;">
+                {{ formfield 'other_income_specify' }}
+            </div>
+            {{ formfield 'familiarity' }}
+
 
         </div>
       </div>
@@ -33,4 +56,26 @@
 {{next_button}}
 
 
+{{ endblock }}
+
+{{ block scripts }}
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectField = document.getElementById('incomeProlific');
+            const otherSpecifyContainer = document.getElementById('other_income_specify_container');
+            selectField.addEventListener('change', function() {
+                if (selectField.value == "3") {
+                    otherSpecifyContainer.style.display = 'block';
+                } else {
+                    otherSpecifyContainer.style.display = 'none';
+                }
+            });
+
+            // Initial check if "Other" is selected
+            if (selectField.value == "3") {
+                otherSpecifyContainer.style.display = 'block';
+            }
+        });
+
+    </script>
 {{ endblock }}
