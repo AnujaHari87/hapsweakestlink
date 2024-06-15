@@ -7,18 +7,16 @@ doc = ''
 
 class C(BaseConstants):
     NAME_IN_URL = '02_Post_Intro'
-    PLAYERS_PER_GROUP = None
+    PLAYERS_PER_GROUP = 4
     NUM_ROUNDS = 1
 
 
 class Subsession(BaseSubsession):
-    def creating_session(self):
-        self.group_like_round(1)
+    pass
 
 
 class Group(BaseGroup):
     pass
-
 
 def wait_for_all(group: Group):
     pass
@@ -41,6 +39,7 @@ def make_field(label):
 
 
 class Player(BasePlayer):
+    ProlificId = models.StringField(label='Prolific ID')
     holidays_1 = make_field('Sun, sea, and beach holiday.')
     holidays_2 = make_field('Party holiday.')
     holidays_3 = make_field('Winter sports holiday.')
@@ -143,6 +142,39 @@ def comprehension4c_error_message(player: Player, value):
     return None
 
 
+class EnterProlificId(Page):
+    form_model = 'player'
+    form_fields = ['ProlificId']
+
+
+class PartsRoundsGroups(Page):
+    form_model = 'player'
+
+
+def group_by_arrival_time_method(subsession, waiting_players):
+    print('in group_by_arrival_time_method')
+    players_consent = [p for p in waiting_players if
+                       p.participant.vars['consent'] == 1 and
+                       p.participant.vars['micAndCameraCheck'] == 0
+                       and p.participant.vars['numberVideo'] == 2 and p.participant.vars['colorVideo'] == 3]
+    print(len(players_consent))
+    if len(players_consent) >= 4:
+        print('about to create a group')
+        return [players_consent[0], players_consent[1], players_consent[2], players_consent[3]]
+
+
+class MyWaitPage(WaitPage):
+    group_by_arrival_time = True
+
+    @staticmethod
+    def after_all_players_arrive(group: Group):
+        import time
+        start_time = time.time()
+        group.session.vars['group_matrix'] = group.subsession.get_group_matrix()
+        end_time = time.time()
+        duration = end_time - start_time
+        print(f"after_all_players_arrive took {duration} seconds")
+
 class DescriptionVideoCommunication(Page):
     form_model = 'player'
 
@@ -160,10 +192,9 @@ class DescriptionVideoCommunication1(Page):
 
 
 class GroupWaitPage(WaitPage):
-    wait_for_all_groups = False
     body_text = 'Please wait till all players in your group have entered the test video meeting.'
-
     after_all_players_arrive = goal_wait_for_all
+
 
 
 class WaitBeforeVideoTest(WaitPage):
@@ -178,7 +209,7 @@ class WaitBeforeVideo(WaitPage):
 
 class VVC(Page):
     form_model = 'group'
-    timeout_seconds = 120
+    timeout_seconds = 900
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -233,6 +264,6 @@ class Comprehension4(Page):
     form_fields = ['comprehension4a', 'comprehension4b', 'comprehension4c']
 
 
-page_sequence = [DescriptionVideoCommunication, GroupWaitPage, VVC0, DescriptionVideoCommunication1,
+page_sequence = [MyWaitPage, EnterProlificId, PartsRoundsGroups, DescriptionVideoCommunication, GroupWaitPage, VVC0, DescriptionVideoCommunication1,
                  WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1,
                  StudyIntroduction2, StudyIntroduction3, Comprehension1, Comprehension2, Comprehension3, Comprehension4]

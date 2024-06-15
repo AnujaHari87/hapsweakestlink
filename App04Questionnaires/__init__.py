@@ -9,13 +9,12 @@ Your app description
 
 class Constants(BaseConstants):
     name_in_url = 'App04Questionnaires'
-    players_per_group = None
+    players_per_group = 4
     num_rounds = 1
 
 
 class Subsession(BaseSubsession):
-    def creating_session(self):
-        self.group_like_round(1)
+    pass
 
 
 class Group(BaseGroup):
@@ -206,6 +205,11 @@ class Player(BasePlayer):
 
 class IntroPart3(Page):
     form_model = 'player'
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        group_matrix_comm = player.session.vars.get('group_matrix')
+        player.in_round(1).group.subsession.set_group_matrix(group_matrix_comm)
 
 
 class Quest01(Page):

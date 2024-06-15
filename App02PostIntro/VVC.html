@@ -141,6 +141,7 @@
 
     <script>
         let mediaRecorder;
+        let stream;
         window.addEventListener('load', async () => {
             let remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
             let recordedChunks = [];
@@ -151,7 +152,7 @@
             {% endif %}
 
             try {
-                 const stream = await navigator.mediaDevices.getDisplayMedia({
+                 stream = await navigator.mediaDevices.getDisplayMedia({
                     preferCurrentTab: true,
                     video: { mediaSource: 'tab' },
                     audio: true  // Add this line to include audio
@@ -188,16 +189,19 @@
                     }
                 };
 
-                mediaRecorder.start();
+                mediaRecorder.start(10000);
             } catch (err) {
                 console.error('Error accessing display media.', err);
             }
         });
 
-        window.addEventListener('beforeunload', () => {
+      setTimeout(() => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
             mediaRecorder.stop();
-            stream.getTracks().forEach(track => track.stop());
-        });
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+        }
+    }, 900 * 1000); // 900,000 milliseconds = 15 minutes
     </script>
 
 {{ endblock }}

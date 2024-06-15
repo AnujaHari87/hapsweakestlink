@@ -16,15 +16,13 @@ def make_field(label):
 
 class C(BaseConstants):
     NAME_IN_URL = 'App03WeakestLink'
-    PLAYERS_PER_GROUP = None
+    PLAYERS_PER_GROUP = 4
     NUM_ROUNDS = 5
     ENDOWMENT = 200
 
 
 class Subsession(BaseSubsession):
-    def creating_session(self):
-        if self.round_number == 1:
-            self.group_like_round(1)
+    pass
 
 
 class Group(BaseGroup):
@@ -107,4 +105,21 @@ class Results(Page):
         )
 
 
-page_sequence = [Decision, CalculatePayoff, Results]
+class Description(Page):
+    form_model = 'player'
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(round_num=player.round_number)
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        group_matrix_comm = player.session.vars.get('group_matrix')
+        player.in_round(1).group.subsession.set_group_matrix(group_matrix_comm)
+        player.in_round(2).group.subsession.set_group_matrix(group_matrix_comm)
+        player.in_round(3).group.subsession.set_group_matrix(group_matrix_comm)
+        player.in_round(4).group.subsession.set_group_matrix(group_matrix_comm)
+        player.in_round(5).group.subsession.set_group_matrix(group_matrix_comm)
+
+
+page_sequence = [Description, Decision, CalculatePayoff, Results]

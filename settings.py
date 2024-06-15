@@ -2,15 +2,15 @@ from os import environ
 
 SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=1, participation_fee=0)
 SESSION_CONFIGS = [dict(name='weakestlinkdemo', num_demo_participants=20,
-                        app_sequence=['App00ConsentAndCheck', 'App01ConsentAndCheck', 'App02PostIntro',
+                        app_sequence=['App01ConsentAndCheck',  'App02PostIntro',
                                       'App03WeakestLink', 'App04Questionnaires', 'App05Payoff', 'App06ThankYou',
                                       'App07ConsentThankYou'])]
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = ''
 USE_POINTS = False
 DEMO_PAGE_INTRO_HTML = ''
-PARTICIPANT_FIELDS = ['optInConsent', 'consent', 'micAndCameraCheck', 'numberVideo', 'colorVideo','payoff_ppg', 'payoff_round']
-SESSION_FIELDS = []
+PARTICIPANT_FIELDS = ['optInConsent', 'consent', 'micAndCameraCheck', 'numberVideo', 'colorVideo','payoff_ppg', 'payoff_round', 'past_group_id']
+SESSION_FIELDS = ['group_matrix']
 ROOMS = [
     dict(
         name='HapsPilot',
