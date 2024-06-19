@@ -29,7 +29,7 @@ class Group(BaseGroup):
     groupMin = models.IntegerField(
         min=0, max=40, initial=40
     )
-
+    print('recreates group')
     randomNumber = models.IntegerField()
 
 
@@ -64,9 +64,9 @@ class Decision(Page):
     def live_method(player: Player, data):
         if "ownDecision" in data:
             player.ownDecision = data["ownDecision"]
-            group = player.group
-            if player.ownDecision < group.groupMin:
-                group.groupMin = player.ownDecision
+
+
+
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -75,10 +75,14 @@ class Decision(Page):
 
 class CalculatePayoff(WaitPage):
     body_text = "Please wait until your team members have made their decision."
-    group_id = models.IntegerField()
 
     @staticmethod
     def after_all_players_arrive(group: Group):
+        for player in group.get_players():
+            group = player.group
+            if player.ownDecision < group.groupMin:
+                group.groupMin = player.ownDecision
+
         for p in group.get_players():
             p.payoff_hypo = C.ENDOWMENT + (6 * group.groupMin) - (5 * p.ownDecision)
         if group.round_number == 5:
@@ -115,11 +119,10 @@ class Description(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         group_matrix_comm = player.session.vars.get('group_matrix')
-        player.in_round(1).group.subsession.set_group_matrix(group_matrix_comm)
-        player.in_round(2).group.subsession.set_group_matrix(group_matrix_comm)
-        player.in_round(3).group.subsession.set_group_matrix(group_matrix_comm)
-        player.in_round(4).group.subsession.set_group_matrix(group_matrix_comm)
-        player.in_round(5).group.subsession.set_group_matrix(group_matrix_comm)
+        player.in_round(player.round_number).group.subsession.set_group_matrix(group_matrix_comm)
 
 
-page_sequence = [Description, Decision, CalculatePayoff, Results]
+class WLWaitPage(WaitPage):
+    pass
+
+page_sequence = [Description, Decision, CalculatePayoff, Results, WLWaitPage]

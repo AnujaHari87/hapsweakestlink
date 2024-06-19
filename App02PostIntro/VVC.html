@@ -3,205 +3,232 @@
 {{ block content }}
 
 <style>
-         .column {
+    .column {
         float: left;
         height: 80vh; /* Responsive height */
         box-sizing: border-box;
-        }
-        .left {
-            width: 70%;
-        }
-        .right {
-            width: 30%;
-            vertical-align: middle;
-            border: 1px solid #000;
-        }
+    }
+    .left {
+        width: 70%;
+    }
+    .right {
+        width: 30%;
+        vertical-align: middle;
+        border: 1px solid #000;
+    }
 
-        /* Row style with maximum width and responsive adjustments */
+    /* Row style with maximum width and responsive adjustments */
+    .row {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto; /* Center align the row */
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    #meet {
+        width: 100%;
+        height: 80vh; /* Set the height to 100% of the viewport height */
+    }
+    .my-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+     #displaymessage {
+        display: none;
+     }
+
+    /* Responsive layout */
+    @media (max-width: 1200px) {
         .row {
+            max-width: 1000px;
+        }
+    }
+
+    @media (max-width: 1000px) {
+        .row {
+            max-width: 800px;
+        }
+    }
+
+    @media (max-width: 800px) {
+        .row {
+            max-width: 600px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .row {
+            max-width: 100%;
+        }
+
+        .column {
+            float: none;
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto; /* Center align the row */
+            height: 80vh; /* Adjust height to auto for small screens */
         }
 
-        /* Clear floats after the columns */
-        .row:after {
-            content: "";
-            display: table;
-            clear: both;
-        }
-        #meet {
+        .left, .right {
             width: 100%;
-            height: 80vh; /* Set the height to 100% of the viewport height */
         }
 
-        /* Responsive layout */
-        @media (max-width: 1200px) {
-            .row {
-                max-width: 1000px;
-            }
+        .right {
+            margin-top: 20px;
+            border: none;
         }
 
-        @media (max-width: 1000px) {
-            .row {
-                max-width: 800px;
-            }
-        }
+    }
 
-        @media (max-width: 800px) {
-            .row {
-                max-width: 600px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .row {
-                max-width: 100%;
-            }
-
-            .column {
-                float: none;
-                width: 100%;
-                height: 80vh; /* Adjust height to auto for small screens */
-            }
-
-            .left, .right {
-                width: 100%;
-            }
-
-            .right {
-                margin-top: 20px;
-                border: none;
-            }
-        }
-
-
-    </style>
-
-    <div class="row">
+</style>
+ <div class="my-box">
+      <div id ="message"><p><b>The video meeting will last for 15 minutes.
+                After 15 minutes, you will be automatically redirected to the next page.</b>
+                </p>
+     </div>
+    <div id = "videopanel" class="row">
         <div class="column left">
-            <div id=meet></div>
+            <div id="meet"></div>
         </div>
-        <div id="container" class="column right">
 
+        <div id="container" class="column right">
         </div>
     </div>
 
-     
+</div>
+<br/>
+
 <script src="https://haps-meeting.k8s.iism.kit.edu/external_api.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/highcharts-more.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+
 <script>
+
     const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
-     const NameParam = {{player.id_in_group}}%4;
-     const TN_name = "P" + {{player.id_in_subsession}}
-     // adjust information to display
+    const NameParam = {{player.id_in_group}} % 4;
+    const TN_name = "P" + {{player.id_in_subsession}};
+    // adjust information to display
 
     const options = {
         roomName: "Video Meeting" + {{player.group_id}}, //This is the name of the room, with player's group ID
         parentNode: document.querySelector('#meet'), //Now, you declare here which element should parent your stream.
         configOverwrite: {
             prejoinConfig: {
-                  enabled: false
+                enabled: false
             },
             disableSelfView: false,
             startWithAudioMuted: false,
             startWithVideoMuted: false,
             filmstrip: {
-                 disableResizable: true,
-             },
-
+                disableResizable: true,
+            },
             participantsPane: {
-             hideModeratorSettingsTab: false,
-             hideMoreActionsButton: false,
-             hideMuteAllButton: false
+                hideModeratorSettingsTab: false,
+                hideMoreActionsButton: false,
+                hideMuteAllButton: false
             }
-
-
-        }, //You can turn on or off config elements with this prop.
+        },
         interfaceConfigOverwrite: {
-               TOOLBAR_BUTTONS:[],
-               SHOW_JITSI_WATERMARK: false,
-                TILE_VIEW_MAX_COLUMNS: 2,
-               TILE_VIEW_ENABLED: true},
+            TOOLBAR_BUTTONS: [],
+            SHOW_JITSI_WATERMARK: false,
+            TILE_VIEW_MAX_COLUMNS: 2,
+            TILE_VIEW_ENABLED: true
+        },
         userInfo: {
             displayName: TN_name,
-          }
         }
-        const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
-        //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
-         // Set the virtual background
-        api.addEventListener(`videoConferenceJoined`, () => {
-                  api.executeCommand('setTileView', true);
-                });
-     </script>
+    };
+    const api = new JitsiMeetExternalAPI(domain, options); //This is where the iframe is actually constructed
+    //The function below turns on the Tile View everytime a participant joins. Practically it makes Tile View the default mode
+    api.addEventListener('videoConferenceJoined', () => {
+        api.executeCommand('setTileView', true);
+    });
 
-    <script>
-        let mediaRecorder;
-        let stream;
-        window.addEventListener('load', async () => {
-            let remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
-            let recordedChunks = [];
-            {% if participant.vars.optInConsent == 0 %}
-                remoteServerURL= 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
-            {% else %}
-                remoteServerURL= 'https://kithumansubjectsstudy.org:3000/upload/video/optIn';
-            {% endif %}
+    let mediaRecorder;
+    let recordedChunks = [];
+    let stream;
+
+
+
+    window.addEventListener('load', async () => {
+        let remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
+        {% if participant.vars.optInConsent == 0 %}
+            remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
+        {% else %}
+            remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/optIn';
+        {% endif %}
+
+        try {
+            stream = await navigator.mediaDevices.getDisplayMedia({
+                preferCurrentTab: true,
+                video: { mediaSource: 'tab' },
+                audio: true  // Add this line to include audio
+            });
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+           mediaRecorder.onstop = async () => {
+            // Dispose of the Jitsi API to stop the meeting
+            api.dispose();
+
+
+            // Create a Blob from the recorded chunks
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const arrayBuffer = await blob.arrayBuffer();
+
+            // Prepare formData for upload
+            const formData = new FormData();
+            const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
+            const groupId = '{{player.group_id }}';
+            const playerId = '{{player.id_in_subsession}}';
+            const filenameWebm = `recording_${groupId}_${playerId}.webm`;
+
+            // Append both webm and mp4 files to formData
+            formData.append('video', blob, filenameWebm);
 
             try {
-                 stream = await navigator.mediaDevices.getDisplayMedia({
-                    preferCurrentTab: true,
-                    video: { mediaSource: 'tab' },
-                    audio: true  // Add this line to include audio
+                // Upload the files
+                const response = await fetch(remoteServerURL, {
+                    method: 'POST',
+                    body: formData
                 });
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
-
-                mediaRecorder.onstop = async () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    const formData = new FormData();
-                    const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
-					const groupId = '{{ player.group_id }}';
-					const playerId = '{{player.id_in_subsession}}';
-					const filename = `recording_${groupId}_${playerId}.webm`;
-                    formData.append('video', blob, filename);
-
-                    try {
-                        const response = await fetch(remoteServerURL, {
-                            method: 'POST',
-                            body: formData
-                        });
-                        if (response.ok) {
-                            console.log('Video successfully uploaded.');
-                        } else {
-                            console.error('Upload failed.');
-                        }
-                    } catch (err) {
-                        console.error('Error uploading video:', err);
-                    }
-                };
-
-                mediaRecorder.start(10000);
+                if (response.ok) {
+                    console.log('Videos successfully uploaded.');
+                } else {
+                    console.error('Upload failed.');
+                }
             } catch (err) {
-                console.error('Error accessing display media.', err);
+                console.error('Error uploading videos:', err);
             }
-        });
 
-      setTimeout(() => {
-        if (mediaRecorder && mediaRecorder.state === 'recording') {
-            mediaRecorder.stop();
-            const tracks = stream.getTracks();
-            tracks.forEach(track => track.stop());
+
+        };
+            mediaRecorder.start();
+
+            // Stop recording after 15 minutes
+           $('.otree-timer__time-left').on('update.countdown', function (event) {
+                if (event.offset.totalSeconds === 1) {
+                    mediaRecorder.stop();
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            });
+        } catch (err) {
+            console.error('Error accessing display media.', err);
         }
-    }, 900 * 1000); // 900,000 milliseconds = 15 minutes
-    </script>
+    });
 
+</script>
 {{ endblock }}

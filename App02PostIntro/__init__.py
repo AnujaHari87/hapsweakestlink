@@ -265,5 +265,5 @@ class Comprehension4(Page):
 
 
 page_sequence = [MyWaitPage, EnterProlificId, PartsRoundsGroups, DescriptionVideoCommunication, GroupWaitPage, VVC0, DescriptionVideoCommunication1,
-                 WaitBeforeVideo, VVC, EndVVC, StudyIntroduction1,
+                 WaitBeforeVideo, VVC, StudyIntroduction1,
                  StudyIntroduction2, StudyIntroduction3, Comprehension1, Comprehension2, Comprehension3, Comprehension4]
