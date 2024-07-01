@@ -313,24 +313,6 @@ class QuestDemographics(Page):
                    'prolifichours_day', 'prolificprimary_income', 'other_income_specify', 'familiarity']
 
 
-class QuestAR(Page):
-    form_model = 'player'
-    form_fields = ['attractivenessrating']
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        image_names = [
-            'teamco1.png',
-            'teamco2.png',
-            'teamco3.png',
-            'teamco4.png',
-            'teamco5.png',
-            'teamco6.png',
-
-        ]
-        return dict(image_data=make_image_data(image_names))
-
-
 class Quest10(Page):
     form_model = 'player'
     form_fields = ['psychological_safety_1', 'psychological_safety_2', 'psychological_safety_3',

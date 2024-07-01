@@ -35,13 +35,30 @@
         height: 80vh; /* Set the height to 100% of the viewport height */
     }
     .my-box {
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-     #displaymessage {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+    #displaymessage {
         display: none;
-     }
+    }
+
+    #progressBarContainer {
+        width: 100%;
+        background-color: #f3f3f3;
+        border: 1px solid #ccc;
+        margin-top: 20px;
+        display: none;
+    }
+
+    #progressBar {
+        width: 0;
+        height: 30px;
+        background-color: #4caf50;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+    }
 
     /* Responsive layout */
     @media (max-width: 1200px) {
@@ -81,24 +98,26 @@
             margin-top: 20px;
             border: none;
         }
-
     }
 
 </style>
- <div class="my-box">
-      <div id ="message"><p><b>The video meeting will last for 15 minutes.
-                After 15 minutes, you will be automatically redirected to the next page.</b>
-                </p>
-     </div>
-    <div id = "videopanel" class="row">
+<div class="my-box">
+    <div id="message"><p><b>The video meeting will last for 15 minutes.
+        After 15 minutes, you will be automatically redirected to the next page.</b>
+    </p></div>
+    <div id="videopanel" class="row">
         <div class="column left">
             <div id="meet"></div>
         </div>
-
-        <div id="container" class="column right">
-        </div>
+        <div id="container" class="column right"></div>
     </div>
-
+    <div id="progressBarContainer" style="display:none;">
+        <div id="progressBar">0%</div>
+    </div>
+    <div id="nextButtonContainer" style="display:none;">
+        <button id="nextButton">Next</button>
+    </div>
+     <input id="duration" type="hidden" name="video_duration" value="0.0"/>
 </div>
 <br/>
 
@@ -111,10 +130,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 
 <script>
-
     const domain = "haps-meeting.k8s.iism.kit.edu"; //Here goes your domain where the meeting takes place.
     const NameParam = {{player.id_in_group}} % 4;
-    const TN_name = "P" + {{player.id_in_subsession}};
+    const TN_name = "P" + {{player.id_in_group}};
     // adjust information to display
 
     const options = {
@@ -134,13 +152,26 @@
                 hideModeratorSettingsTab: false,
                 hideMoreActionsButton: false,
                 hideMuteAllButton: false
-            }
+            },
+            resolution: 480,
+                constraints: {
+                    video: {
+                        height: {
+                            ideal: 480,
+                            max: 480,
+                            min: 240
+                        }
+                    }
+                },
+                disableSimulcast: false,
+                enableLayerSuspension: true
         },
         interfaceConfigOverwrite: {
             TOOLBAR_BUTTONS: [],
             SHOW_JITSI_WATERMARK: false,
             TILE_VIEW_MAX_COLUMNS: 2,
-            TILE_VIEW_ENABLED: true
+            TILE_VIEW_ENABLED: true,
+            SHOW_MEETING_TIMER: false
         },
         userInfo: {
             displayName: TN_name,
@@ -156,79 +187,123 @@
     let recordedChunks = [];
     let stream;
 
-
-
-    window.addEventListener('load', async () => {
+    document.addEventListener('DOMContentLoaded', async function () {
         let remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
         {% if participant.vars.optInConsent == 0 %}
             remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
         {% else %}
             remoteServerURL = 'https://kithumansubjectsstudy.org:3000/upload/video/optIn';
         {% endif %}
+        let recordedChunks = [];
+        let mediaRecorder;
+        let stream;
+        const formData = new FormData();
 
         try {
+            console.log('Requesting display media...');
             stream = await navigator.mediaDevices.getDisplayMedia({
-                preferCurrentTab: true,
-                video: { mediaSource: 'tab' },
-                audio: true  // Add this line to include audio
+                      preferCurrentTab: true,
+            	      video: {
+                         mediaSource: 'tab',
+                         frameRate: { max: 10 },
+                         width: { max: 1024 },
+                         height: { max: 768 }
+                       },
+                       audio: true
             });
+
+            console.log('Media stream obtained.');
+
             mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
 
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) {
                     recordedChunks.push(event.data);
+                    console.log('Data available:', event.data);
                 }
             };
 
-           mediaRecorder.onstop = async () => {
-            // Dispose of the Jitsi API to stop the meeting
-            api.dispose();
+            mediaRecorder.onstop = async () => {
+                console.log('Media recorder stopped.');
 
+                // Create a Blob from the recorded chunks
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
 
-            // Create a Blob from the recorded chunks
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            const arrayBuffer = await blob.arrayBuffer();
+                const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
+                const groupId = '{{ group.id_in_subsession }}';
+                const playerId = '{{ player.id_in_group }}';
+                const filenameWebm = `recording_${groupId}_${playerId}.webm`;
 
-            // Prepare formData for upload
-            const formData = new FormData();
-            const timestamp = new Date().toISOString().replace(/[-:.]/g, '');
-            const groupId = '{{player.group_id }}';
-            const playerId = '{{player.id_in_subsession}}';
-            const filenameWebm = `recording_${groupId}_${playerId}.webm`;
+                // Append the webm file to formData
+                formData.append('video', blob, filenameWebm);
+                console.log('Form data prepared for upload.');
 
-            // Append both webm and mp4 files to formData
-            formData.append('video', blob, filenameWebm);
-
-            try {
-                // Upload the files
-                const response = await fetch(remoteServerURL, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (response.ok) {
-                    console.log('Videos successfully uploaded.');
-                } else {
-                    console.error('Upload failed.');
+               /* // Calculate video duration using ffmpeg
+                const { createFFmpeg, fetchFile } = FFmpeg;
+                const ffmpeg = createFFmpeg({ log: true });
+                await ffmpeg.load();
+                ffmpeg.FS('writeFile', filenameWebm, await fetchFile(blob));
+                await ffmpeg.run('-i', filenameWebm, '-hide_banner');
+                const durationOutput = ffmpeg.FS('readFile', 'stdout');
+                const durationMatch = durationOutput.toString().match(/Duration: (\d+):(\d+):(\d+).(\d+)/);
+                let totalDuration = 0;
+                if (durationMatch) {
+                    const hours = parseInt(durationMatch[1], 10);
+                    const minutes = parseInt(durationMatch[2], 10);
+                    const seconds = parseInt(durationMatch[3], 10);
+                    const milliseconds = parseInt(durationMatch[4], 10);
+                    totalDuration = (hours * 3600) + (minutes * 60) + seconds + (milliseconds / 1000);
+                    console.log('Video Duration:', totalDuration, 'seconds');
                 }
-            } catch (err) {
-                console.error('Error uploading videos:', err);
-            }
+
+                    var duration = document.getElementById("duration");
+                    duration.value = totalDuration;*/
+
+                // Store the total duration in an oTree variable
 
 
-        };
+                // Upload the video
+               let uploadUrl = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
+                {% if participant.vars.optInConsent == 0 %}
+                    uploadUrl = 'https://kithumansubjectsstudy.org:3000/upload/video/noOptIn';
+                {% else %}
+                    uploadUrl = 'https://kithumansubjectsstudy.org:3000/upload/video/optIn';
+                {% endif %}
+
+                try {
+                    const response = await fetch(uploadUrl, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        console.log('Video uploaded successfully.');
+                        alert('Video uploaded successfully.');
+                    } else {
+                        console.error('Failed to upload video.');
+                        alert('Failed to upload video.');
+                    }
+                } catch (error) {
+                    console.error('Error uploading video:', error);
+                }
+            };
+
             mediaRecorder.start();
+            console.log('Media recorder started.');
 
             // Stop recording after 15 minutes
-           $('.otree-timer__time-left').on('update.countdown', function (event) {
-                if (event.offset.totalSeconds === 1) {
+            $('.otree-timer__time-left').on('update.countdown', function (event) {
+                if (event.offset.totalSeconds === 61) {
                     mediaRecorder.stop();
                     stream.getTracks().forEach(track => track.stop());
-                }
+		    api.dispose();
+  		    document.getElementById('message').innerHTML = '<p><b>Please wait briefly while the upload completes.</b></p>';
+                    
+                  }
             });
         } catch (err) {
             console.error('Error accessing display media.', err);
         }
     });
-
 </script>
 {{ endblock }}

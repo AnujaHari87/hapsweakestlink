@@ -76,6 +76,20 @@ class Decision(Page):
 class CalculatePayoff(WaitPage):
     body_text = "Please wait until your team members have made their decision."
 
+    def vars_for_template(self):
+        return {
+            'reload_interval': 5000,  # 5000 milliseconds = 5 seconds
+    }
+
+    def get_template_name(self):
+        # Use a standard oTree template and modify it with JavaScript
+        return 'global/MyWaitPage.html'
+
+    def js_vars(self):
+        return {
+            'reload_interval': 5000  # 5000 milliseconds = 5 seconds
+    }
+
     @staticmethod
     def after_all_players_arrive(group: Group):
         for player in group.get_players():
@@ -125,4 +139,4 @@ class Description(Page):
 class WLWaitPage(WaitPage):
     pass
 
-page_sequence = [Description, Decision, CalculatePayoff, Results, WLWaitPage]
+page_sequence = [Description, Decision, CalculatePayoff, Results]

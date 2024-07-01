@@ -1,5 +1,8 @@
 from otree.api import *
 
+
+import os
+
 c = cu
 
 doc = ''
@@ -17,6 +20,9 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     pass
+
+
+
 
 def wait_for_all(group: Group):
     pass
@@ -80,6 +86,8 @@ class Player(BasePlayer):
         widget=widgets.CheckboxInput,
         blank=True
     )
+    video_url = models.StringField()
+    video_duration = models.FloatField(initial=0, blank=True, null=True)  # Duration in seconds
 
 
 def comprehension1_error_message(player: Player, value):
@@ -165,6 +173,20 @@ def group_by_arrival_time_method(subsession, waiting_players):
 
 class MyWaitPage(WaitPage):
     group_by_arrival_time = True
+    body_text = "Please wait until your team members arrive."
+    def vars_for_template(self):
+        return {
+            'reload_interval': 5000,  # 5000 milliseconds = 5 seconds
+    }
+
+    def get_template_name(self):
+        # Use a standard oTree template and modify it with JavaScript
+        return 'global/MyWaitPage.html'
+
+    def js_vars(self):
+        return {
+            'reload_interval': 5000  # 5000 milliseconds = 5 seconds
+    }
 
     @staticmethod
     def after_all_players_arrive(group: Group):
@@ -174,6 +196,7 @@ class MyWaitPage(WaitPage):
         end_time = time.time()
         duration = end_time - start_time
         print(f"after_all_players_arrive took {duration} seconds")
+
 
 class DescriptionVideoCommunication(Page):
     form_model = 'player'
@@ -196,7 +219,6 @@ class GroupWaitPage(WaitPage):
     after_all_players_arrive = goal_wait_for_all
 
 
-
 class WaitBeforeVideoTest(WaitPage):
     after_all_players_arrive = goal_wait_for_all
     title_text = 'Please wait till all players have entered the test video meeting.'
@@ -208,13 +230,18 @@ class WaitBeforeVideo(WaitPage):
 
 
 class VVC(Page):
-    form_model = 'group'
-    timeout_seconds = 900
-
+    form_model = 'player'
+    timeout_seconds = 960
+    form_fields = ['video_duration']
     @staticmethod
     def vars_for_template(player: Player):
         optInConsent = player.participant.vars['optInConsent']
         return dict(optInConsent=optInConsent)
+
+
+
+
+
 
 
 class VVC0(Page):
@@ -264,6 +291,7 @@ class Comprehension4(Page):
     form_fields = ['comprehension4a', 'comprehension4b', 'comprehension4c']
 
 
-page_sequence = [MyWaitPage, EnterProlificId, PartsRoundsGroups, DescriptionVideoCommunication, GroupWaitPage, VVC0, DescriptionVideoCommunication1,
+page_sequence = [MyWaitPage, EnterProlificId, PartsRoundsGroups, DescriptionVideoCommunication, GroupWaitPage, VVC0,
+                 DescriptionVideoCommunication1,
                  WaitBeforeVideo, VVC, StudyIntroduction1,
                  StudyIntroduction2, StudyIntroduction3, Comprehension1, Comprehension2, Comprehension3, Comprehension4]

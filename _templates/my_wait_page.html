@@ -1,0 +1,25 @@
+{% load otree static %}
+
+<style>
+    .my-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="my-box">
+
+    <p> Please wait till other participants make their decision.</p>
+</div>
+<br/>
+
+    <script>
+        // JavaScript function to reload the page every 5 seconds
+        function reloadPage() {
+            setTimeout(function() {
+                location.reload();
+            }, 5000); // 5000 milliseconds = 5 seconds
+        }
+        window.onload = reloadPage;
+    </script>

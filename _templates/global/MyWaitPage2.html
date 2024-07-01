@@ -1,0 +1,32 @@
+{{ extends 'global/Page.html' }}
+{{ block title }}Please Wait{{ endblock }}
+
+{{ block content }}
+
+    <title>Wait</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .my-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+    </style>
+    <script>
+        function reloadPage() {
+            setTimeout(function() {
+                location.reload();
+            }, 5000); // Reload interval from js_vars
+        }
+        window.onload = reloadPage;
+    </script>
+
+    <div class="my-box">
+    <div class="container">
+      <p class="card-text text-center">Please wait until your team members arrive.</p>
+
+    </div>
+    <br>
+    </div>

@@ -118,10 +118,22 @@
             startWithVideoMuted: false,
             filmstrip: {
                  disableResizable: true,
-             }
+             },
+             resolution: 480,
+             constraints: {
+                    video: {
+                        height: {
+                            ideal: 480,
+                            max: 480,
+                            min: 240
+                        }
+                    }
+                },
+                disableSimulcast: false,
+                enableLayerSuspension: true
         }, //You can turn on or off config elements with this prop.
         interfaceConfigOverwrite: {
-               TOOLBAR_BUTTONS:[],
+               TOOLBAR_BUTTONS:['microphone', 'camera', 'videoquality','fodeviceselection'],
                SHOW_JITSI_WATERMARK: false,
                SHOW_MEETING_NAME: false,
                SHOW_MEETING_TIMER: false,

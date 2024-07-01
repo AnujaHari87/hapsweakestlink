@@ -1,0 +1,33 @@
+{% load static otree %}
+
+    <title>Wait</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+         <style>
+        .my-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+    </style>
+
+    <div class="my-box">
+        <div class="container">
+          <p class="card-text text-center">
+            <h3>{{("Please wait until your team members have made their decision.") }}</h3>
+        </div>
+        <br>
+        </div>
+
+
+    <script>
+        function reloadPage() {
+            setTimeout(function() {
+                location.reload();
+            }, 5000); // Reload interval from js_vars
+        }
+        window.onload = reloadPage;
+    </script>

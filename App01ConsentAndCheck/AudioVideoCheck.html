@@ -3,83 +3,101 @@
 
 {{ block content }}
 
- <style>
-        #video {
-            width: 100%;
-            height: auto;
-            max-height: 60vh; /* Adjusts height based on viewport */
-            border: 1px solid #ccc;
-        }
-        #startBtn, #stopBtn {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        #startBtn {
-            background-color: blue;
-            color: white;
-        }
-        #stopBtn {
-            background-color: blue;
-            color: white;
-            display: none;
-        }
-      /* Applying Roboto font to all elements */
-      .my-box {
+<style>
+    #startBtn, #stopBtn {
+        padding: 10px;
+        margin: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #startBtn {
+        background-color: blue;
+        color: white;
+    }
+
+    #stopBtn {
+        background-color: blue;
+        color: white;
+        display: none;
+    }
+
+    /* Applying Roboto font to all elements */
+    .my-box {
         border: 1px solid #ccc;
         padding: 10px;
         background-color: #f9f9f9;
-      }
-      .hidden {
+    }
+
+    .hidden {
         display: none;
-      }
+    }
 
-      .video-container {
-        position: relative;
-        height: 88%;
-        margin-left: 0px;
-        margin-right: 10px;
-        width: 65%;
-      }
+    .parent-container {
+        display: flex;
+        justify-content: center; /* Centers child horizontally */
+        align-items: center; /* Centers child vertically */
+        height: 100%; /* Adjust to your layout needs */
+        width: 100%;
+    }
 
-       p {
+    .video-container {
+        height: 100%; /* 88% of parent container's height */
+        width: 100%; /* Occupy full width of parent container */
+        border: 1px solid #ccc; /* Optional: border for visualization */
+        display: flex; /* Ensures video container expands to fit content */
+        justify-content: center; /* Centers child horizontally */
+        align-items: center; /* Centers child vertically */
+    }
+
+    video {
+        max-width: 100%; /* Ensure video doesn't exceed container width */
+        max-height: 100%; /* Ensure video doesn't exceed container height */
+        display: block; /* Remove extra space for inline elements */
+        object-fit: contain; /* Maintain aspect ratio and fit within container */
+    }
+
+    p {
         font-size: 16px;
-      }
+    }
 
-      div {
+    div {
         font-size: 16px;
-      }
-        #video-controls {
-            margin-top: 10px;
-        }
-        button {
-            margin-right: 5px;
-        }
-    </style>
-     <div class="my-box">
+    }
 
+    #video-controls {
+        margin-top: 10px;
+    }
+
+    button {
+        margin-right: 5px;
+    }
+</style>
+
+<div class="my-box">
     <p>
-        During the study, you will take part in a <b>virtual group </b> meeting. <br/>
+        During the study, you will take part in a <b>virtual group</b> meeting. <br/>
         We will therefore check your technical requirements to ensure that the camera, audio, microphone and video work properly.
-      <br />
+        <br/>
         <br/>
 
-        <p> <b>Audio and video test: </b></p>
+        <p> <b>Audio and video test:</b></p>
 
         <p> To do the audio and video test, first please watch and listen to the
             following video and then answer the two questions. (You cannot proceed with this study,
-            if you do not pass the audio and video test.)</p> <br/>
+            if you do not pass the audio and video test.)</p>
+        <br/>
 
-        <video id="video" width="600" controls poster="{% static 'black.jpeg'%}">
+        <video id="video" width="100%" controls poster="{% static 'black.jpeg' %}">
             <source src="{% static 'AudioundVideoTest.mp4' %}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+
         <script>
-         const video = document.getElementById('video');
-            const blackScreenPoster = '{% static 'black.jpeg'%}'; // Update this path to your black image
+            const video = document.getElementById('video');
+            const blackScreenPoster = '{% static 'black.jpeg' %}'; // Update this path to your black image
             // Event listener for when the video ends
-            video.addEventListener('ended', function() {
+            video.addEventListener('ended', function () {
                 // Reset the poster to the black screen
                 video.poster = blackScreenPoster;
                 // Show the poster image
@@ -87,57 +105,81 @@
             });
         </script>
 
-         {{formfield 'colorVideo'}} <br/>
-        {{formfield 'numberVideo'}}
+        {{ formfield 'colorVideo' }} <br/>
+        {{ formfield 'numberVideo' }}
 
-         <br/>
-         <p><b> Camera and microphone test:</b><br/> </p>
+        <br/>
+        <p><b> Camera and microphone test:</b><br/></p>
         <p>Please test now whether your camera and microphone work properly by recording a short video. This video
-        is only recorded locally on your device and is not stored on an external server.</p>
-        <br /><b>Short instruction to record a video: </b><br/>
+            is only recorded locally on your device and is not stored on an external server.</p>
+        <br/>
+        <b>Short instruction to record a video:</b><br/>
         <p>If you click on the blue “Start recording” button, you start recording a video message, and the button changes to "Stop recording".
             The recording stops automatically after a maximum of 5 seconds. You can also stop the recording manually by clicking
             on the blue “Stop recording” button. After you tested your camera and microphone, <b>please confirm the statement below the video recording.</b></p>
 
-        <div class="video-container">
-            <video id="video1" autoplay></video>
-         </div>
-        <button id="startBtn" onclick="startRecording()">Start recording</button>
-        <button id="stopBtn" onclick="stopRecording()">Stop recording</button>
+
+            <div class="video-container">
+                <video id="video1" width="100%" autoplay  poster="{% static 'black.jpeg' %}"></video>
+            </div>
+
+
+        <button id="startBtn">Start recording</button>
+        <button id="stopBtn" style="display: none;">Stop recording</button>
 
         <script>
-        let mediaRecorder;
-        let recordedChunks = [];
+            let mediaRecorder;
+            let recordedChunks = [];
 
-        const video1 = document.getElementById('video1');
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
+            const video1 = document.getElementById('video1');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
 
-        function handleDataAvailable(event) {
-            if (event.data.size > 0) {
-                recordedChunks.push(event.data);
+            function handleDataAvailable(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
             }
-        }
 
-        function handleStop() {
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.style = 'display: none';
-            a.href = url;
-            a.download = 'recorded-video.webm';
-            a.click();
-            window.URL.revokeObjectURL(url);
-            stopTracks(stream);
-        }
+            function handleStop() {
+                const blob = new Blob(recordedChunks, {type: 'video/webm'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                document.body.appendChild(a);
+                a.style = 'display: none';
+                a.href = url;
+                a.download = 'recorded-video.webm';
+                a.click();
+                window.URL.revokeObjectURL(url);
+                stopTracks(stream);
+                 const video = document.getElementById('video1');
+                const blackScreenPoster = '{% static 'black.jpeg' %}'; // Update this path to your black image
 
-        function startRecording() {
-            recordedChunks = [];
-            mediaRecorder.start();
-            startBtn.style.display = 'none';
-            stopBtn.style.display = 'inline';
-            setTimeout(() => {
+                // Reset the poster to the black screen
+                video.poster = blackScreenPoster;
+                // Show the poster image
+                video.load();
+            }
+
+            function startRecording(event) {
+                event.preventDefault();
+                recordedChunks = [];
+                mediaRecorder.start();
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'inline';
+                setTimeout(() => {
+                    if (mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                        startBtn.style.display = 'inline';
+                        stopBtn.style.display = 'none';
+                        video1.srcObject = null;
+                        stopTracks(stream);
+                    }
+                }, 5000); // Stop recording after 5 seconds
+            }
+
+            function stopRecording(event) {
+		 event.preventDefault();
                 if (mediaRecorder.state !== 'inactive') {
                     mediaRecorder.stop();
                     startBtn.style.display = 'inline';
@@ -145,43 +187,39 @@
                     video1.srcObject = null;
                     stopTracks(stream);
                 }
-            }, 5000); // Stop recording after 5 seconds
-        }
-
-        function stopRecording() {
-            if (mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                startBtn.style.display = 'inline';
-                stopBtn.style.display = 'none';
-                video1.srcObject = null;
-                stopTracks(stream);
             }
-        }
-        function stopTracks(stream) {
-            stream.getTracks().forEach(track => {
-                track.stop();
-            });
-        }
 
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(stream => {
-                video1.srcObject = stream;
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.ondataavailable = handleDataAvailable;
-                mediaRecorder.onstop = handleStop;
-            })
-            .catch(error => {
-                console.error('Error accessing media devices.', error);
-            });
-    </script>
-        <br/> <br/>
-        <p>Before you can continue, please confirm the following: (If you don’t confirm the statement, you cannot proceed with this study)<br/><br/><p>
+            function stopTracks(stream) {
+                stream.getTracks().forEach(track => {
+                    track.stop();
+                });
+            }
 
-        <p> <b> MY CAMERA AND MICROPHONE SEEM TO WORK FINE. </b><p>
-        {{ formfield 'micAndCameraCheck'}}
+            navigator.mediaDevices.getUserMedia({video: true, audio: true})
+                .then(stream => {
+                    video1.srcObject = stream;
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = handleDataAvailable;
+                    mediaRecorder.onstop = handleStop;
+                })
+                .catch(error => {
+                    console.error('Error accessing media devices.', error);
+                });
+
+            // Event listeners for the buttons
+            startBtn.addEventListener('click', startRecording);
+            stopBtn.addEventListener('click', stopRecording);
+        </script>
+
+        <br/><br/>
+        <p>Before you can continue, please confirm the following: (If you don’t confirm the statement, you cannot proceed with this study)</p><br/>
+
+        <p> <b> My camera and microphone seem to work fine. </b></p>
+        {{ formfield 'micAndCameraCheck' }}
 
     </div>
-<br/>
 
-{{next_button}}
+    <br/>
+
+    {{ next_button }}
 {{ endblock }}
